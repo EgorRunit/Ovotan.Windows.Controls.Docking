@@ -12,7 +12,7 @@ namespace Ovotan.Windows.Controls.Docking
 {
     public class DockingHost : ContentControl
     {
-        public DockPlacementWindow _dockPlacementWindow;
+        public DockGrid _panelDragGrid;
         /// <summary>
         /// Ссылка на последнию активную панель.
         /// </summary>
@@ -37,7 +37,7 @@ namespace Ovotan.Windows.Controls.Docking
         public DockingHost(IDockingMessageQueue dockingMessageQueue)
         {
             _dockingMessageQueue = dockingMessageQueue;
-            _dockPlacementWindow = new DockPlacementWindow(this, _dockingMessageQueue);
+            _panelDragGrid = new DockGrid(this);
             _dockingMessageQueue.Register(DockingMessageType.PanelClosed, (x) => _dockConstractureService.RemovePanel(x as DockPanel));
             _dockingMessageQueue.Register(DockingMessageType.PanelSplitted, (x) => _dockConstractureService.SplitPanel(x as PanelSplittedMessage));
             _dockingMessageQueue.Register(DockingMessageType.PanelAttached, (x) => _panelAttached((PanelAttachedMessage)x));
@@ -77,9 +77,10 @@ namespace Ovotan.Windows.Controls.Docking
             _dockConstractureService.AttachPanel(panelAttachedType, this, dockPanelContent);
         }
 
+
         public void ShowDockPanelWindow(FrameworkElement DockPanelContent)
         { 
-            var window = new DockPanelWindow(_dockPlacementWindow, DockPanelContent);
+            var window = new DockPanelWindow(_panelDragGrid, DockPanelContent);
             window.Initialize(_dockingMessageQueue);
             window.Show();
         }

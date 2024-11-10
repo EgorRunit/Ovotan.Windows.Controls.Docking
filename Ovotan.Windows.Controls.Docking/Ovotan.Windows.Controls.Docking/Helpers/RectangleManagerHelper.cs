@@ -2,33 +2,48 @@ using System.Windows;
 
 namespace System
 {
-    public class ElementRectangle
+    public class OwnerRect
     {
-        public  double X, Y, X1, Y1;
+        public  double X, Y, Width, Height;
         public FrameworkElement Owner;
-        public ElementRectangle(FrameworkElement owner,  double x, double y, double x1, double y1)
+        public OwnerRect(FrameworkElement owner,  double left, double top, double width, double height)
         {
-            X = x;
-            X1 = x1;
-            Y = y;
-            Y1 = y1;
+            X = left;
+            Width = width;
+            Y = top;
+            Height = height;
             Owner = owner;
         }
     }
 
     public static class ElementRectangleExtension
     {
-        public static ElementRectangle FindElementFromPoint(this List<ElementRectangle> elements , Point point)
+        public static OwnerRect FindElementFromPoint(this List<OwnerRect> elements , Point point)
         {
 
-            foreach (ElementRectangle rectangle in elements)
+            foreach (OwnerRect rectangle in elements)
             {
-                if(rectangle.X <= point.X &&  rectangle.Y <= point.Y && rectangle.X1>= point.X && rectangle.Y1 >= point.Y)
+                if(rectangle.X <= point.X &&  rectangle.Y <= point.Y && rectangle.Width>= point.X && rectangle.Height >= point.Y)
                 {
                     return rectangle;
                 }
             }
             return null;
+
+        }
+
+
+        public static Rect FindElementFromPoint(this List<Rect> elements, Point point)
+        {
+
+            foreach (var rectangle in elements)
+            {
+                if (rectangle.X <= point.X && rectangle.Y <= point.Y && rectangle.Width>= point.X && rectangle.Height >= point.Y)
+                {
+                    return rectangle;
+                }
+            }
+            return Rect.Empty;
 
         }
     }

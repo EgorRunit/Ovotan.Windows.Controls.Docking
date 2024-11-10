@@ -10,13 +10,13 @@ namespace Ovotan.Windows.Controls.Docking.Windows
     /// </summary>
     public partial class DockPanelWindow : Window, IDockPanelWindow
     {
-        DockPlacementWindow _dockPlacementWindow;
+        DockGrid _dockPlacementWindow;
         IDockingMessageQueue _dockingMessageQueue;
         Point _location;
 
         public FrameworkElement DockPanelContent { get; private set; }
 
-        public DockPanelWindow(DockPlacementWindow dockPlacementWindow, FrameworkElement contentElement)
+        public DockPanelWindow(DockGrid dockPlacementWindow, FrameworkElement contentElement)
         {
             _dockPlacementWindow = dockPlacementWindow;
             InitializeComponent();
@@ -26,6 +26,7 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             DockPanelContent.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
             DockPanelContent.SetValue(Grid.RowProperty, 1);
             MainGrid.Children.Add(DockPanelContent);
+            Application.Current.MainWindow.Closing += (s,a) => Close();
         }
 
         public void Initialize(IDockingMessageQueue dockingMessageQueue)
@@ -43,7 +44,7 @@ namespace Ovotan.Windows.Controls.Docking.Windows
         void _grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _location = e.GetPosition(this);
-            _dockPlacementWindow.Show(this, DockPanelWindow_MouseMove);
+            _dockPlacementWindow.Show<IDockPanel>(this, DockPanelWindow_MouseMove);
         }
 
         protected override void OnClosed(EventArgs e)

@@ -18,15 +18,15 @@ namespace Ovotan.Windows.Controls.Docking.Windows
         IDockingMessageQueue _dockingMessageQueue;
         DockingHost _dockingHost;
         Action<MouseEventArgs> _mouseMoveCallback;
-        List<ElementRectangle> _elementRectangles;
+        List<OwnerRect> _elementRectangles;
         Point _location;
 
         public DockPlacementWindow(DockingHost dockingHost, IDockingMessageQueue dockingMessageQueue)
         {
             _dockingHost = dockingHost;
             _dockingMessageQueue = dockingMessageQueue;
-            this.MouseUp += DockPlacementWindow_MouseUp;
-            this.MouseMove += DockPlacementWindow_MouseMove;
+            MouseUp += DockPlacementWindow_MouseUp;
+            MouseMove += DockPlacementWindow_MouseMove;
             InitializeComponent();
         }
 
@@ -128,18 +128,22 @@ namespace Ovotan.Windows.Controls.Docking.Windows
         {
             var startPoints = _dockingHost.PointToScreen(new Point());
             var ss = _dockingHost.FindLogicalChildren<IDockPanel>();
-            _elementRectangles = new List<ElementRectangle>(ss.Count());
+            _elementRectangles = new List<OwnerRect>(ss.Count());
             _location = _dockingHost.PointToScreen(new Point());
             foreach (var element in ss)
             {
                 var frameworkElement = element as FrameworkElement;
                 var startPoint = (element as FrameworkElement).PointToScreen(new Point());
-                _elementRectangles.Add(new ElementRectangle(frameworkElement, startPoint.X, startPoint.Y, startPoint.X + frameworkElement.ActualWidth,startPoint.Y + frameworkElement.ActualHeight));
+                _elementRectangles.Add(new OwnerRect(frameworkElement, startPoint.X, startPoint.Y, startPoint.X + frameworkElement.ActualWidth,startPoint.Y + frameworkElement.ActualHeight));
             }
             _oldElementUndexMouse = null;
             _dragginWindpow = dragginWindpow;
+
+
             _isMouseCaptured = true;
             _mouseMoveCallback = mouseMoveCallback;
+
+
             Top = startPoints.Y;
             Left = startPoints.X;
             Height = _dockingHost.ActualHeight;
