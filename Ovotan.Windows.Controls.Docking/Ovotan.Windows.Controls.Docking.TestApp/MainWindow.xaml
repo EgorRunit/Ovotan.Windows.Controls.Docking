@@ -19,6 +19,7 @@
                 <MenuItem Header="Attach top" Click="_attachPanelTop"/>
                 <MenuItem Header="Attach bottom" Click="_attachPanelBottom"/>
                 <MenuItem Header="New drag" Click="MenuItem_Click"/>
+                <MenuItem Header="Add document" Click="MenuItem_Click_1"/>
             </MenuItem>
         </Menu>
     </Grid>

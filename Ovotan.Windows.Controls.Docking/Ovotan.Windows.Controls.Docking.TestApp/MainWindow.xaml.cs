@@ -55,5 +55,10 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
         {
             _queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new TestPanel());
         }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            _host.SiteHost.AddDocument(new TestDocument());
+        }
     }
 }

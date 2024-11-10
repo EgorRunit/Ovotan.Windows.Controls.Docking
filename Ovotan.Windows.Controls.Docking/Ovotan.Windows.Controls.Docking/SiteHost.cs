@@ -12,8 +12,8 @@ namespace Ovotan.Windows.Controls.Docking
 
         //Экземпляр очереди сообщений элметов докинга.
         IDockingMessageQueue _dockingMessageQueue;
-        Ovotan.Windows.Controls.TabControl _tabControl;
-        Dictionary<Guid, TabItem> _documents;
+        TabControl _tabControl;
+        Dictionary<Guid, ISiteHostDocument> _documents;
 
         /// <summary>
         /// Отображить главное меню или нет.
@@ -45,7 +45,7 @@ namespace Ovotan.Windows.Controls.Docking
             var tab = new TabControlItem() { Header = document.Header };
             tab.Content = document;
             _tabControl.AddTab(tab);
-            //_documents.Add(document.ID, tab);
+            _documents.Add(document.ID, document);
         }
 
         public bool ContainsDocument(Guid id)
@@ -70,7 +70,7 @@ namespace Ovotan.Windows.Controls.Docking
         {
             base.OnApplyTemplate();
             _tabControl = Template.FindName("TabControl", this) as TabControl;
-            _documents = new Dictionary<Guid, TabItem>();
+            _documents = new Dictionary<Guid, ISiteHostDocument>();
         }
 
     }
