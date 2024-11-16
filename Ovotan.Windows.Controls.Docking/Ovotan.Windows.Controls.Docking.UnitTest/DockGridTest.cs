@@ -11,8 +11,8 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
         IDockGridChild _firstPanel;
         IDockGridChild _secondPanel;
 
-        public DockGridTest() 
-        { 
+        public DockGridTest()
+        {
             _dockGrid = new DockGrid();
             _firstPanel = new DockPanel();
             _secondPanel = new DockPanel();
@@ -114,7 +114,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
         {
             //act
             _dockGrid.Append(_firstPanel);
-            
+
             //assert
             Assert.Throws<NotFrameworkElement>(() => _dockGrid.AppendLeft(new Mocks.DockPanel()));
         }
@@ -131,7 +131,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             //assert
             Assert.Equal(DockGridType.Horizontal, _dockGrid.Type);
             Assert.Single(_dockGrid.RowDefinitions);
-            Assert.Equal(3 ,_dockGrid.Children.Count);
+            Assert.Equal(3, _dockGrid.Children.Count);
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
             Assert.Equal(0, _dockGrid.Children[1].GetValue(Grid.RowProperty));
@@ -230,7 +230,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
         {
             //act
             _dockGrid.Append(_firstPanel);
-            
+
             //assert
             Assert.Throws<NotFrameworkElement>(() => _dockGrid.AppendTop(new Mocks.DockPanel()));
         }
@@ -294,7 +294,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
         }
         #endregion
 
-
+        #region Transform
         [StaFact]
         public void TransformToDockGrid()
         {
@@ -311,6 +311,16 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.NotNull(grid2);
             Assert.Equal(DockGridType.Single, grid2.Type);
             Assert.Equal(grid2, _dockGrid.Children[2]);
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
+            Assert.Equal(0, _dockGrid.Children[2].GetValue(Grid.RowProperty));
+            Assert.Equal(2, _dockGrid.Children[2].GetValue(Grid.ColumnProperty));
+            Assert.Equal(0, grid1.GetValue(Grid.RowProperty));
+            Assert.Equal(0, grid1.GetValue(Grid.ColumnProperty));
+            Assert.Equal(0, grid2.GetValue(Grid.RowProperty));
+            Assert.Equal(2, grid2.GetValue(Grid.ColumnProperty));
+            Assert.Equal(grid1, _dockGrid.Children[0]);
+            Assert.Equal(grid2, _dockGrid.Children[2]);
         }
 
         [StaFact]
@@ -320,14 +330,79 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Throws<ItemNotFoundException>(() => _dockGrid.TransformToDataGrid(_firstPanel));
         }
 
-
         [StaFact]
         public void TransformToDockGridNotFrameworkElement()
         {
             //assert
             Assert.Throws<NotFrameworkElement>(() => _dockGrid.TransformToDataGrid(new Mocks.DockPanel()));
         }
+        #endregion
 
-        ///DockGrid To new DockGrid
+
+
+
+        [StaFact]
+        public void RemoveSingle()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.Remove(_firstPanel);
+
+            //assert
+            Assert.Empty(_dockGrid.Children);
+            Assert.Equal(DockGridType.Empty, _dockGrid.Type);
+            Assert.Equal(0, _dockGrid.RowCount);
+            Assert.Equal(0, _dockGrid.ColumnCount);
+        }
+
+        [StaFact]
+        public void RemoveHorizontal()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendRight(_secondPanel);
+            _dockGrid.Remove(_secondPanel);
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Equal(DockGridType.Single, _dockGrid.Type);
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
+            Assert.Equal(1, _dockGrid.RowCount);
+            Assert.Equal(1, _dockGrid.ColumnCount);
+            Assert.Same(_firstPanel, _dockGrid.Children[0]);
+        }
+
+        [StaFact]
+        public void RemoveVertical()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendBottom(_secondPanel);
+            _dockGrid.Remove(_secondPanel);
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Equal(DockGridType.Single, _dockGrid.Type);
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
+            Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
+            Assert.Equal(1, _dockGrid.RowCount);
+            Assert.Equal(1, _dockGrid.ColumnCount);
+            Assert.Same(_firstPanel, _dockGrid.Children[0]);
+        }
+
+        [StaFact]
+        public void RemoveNotFoundException()
+        {
+            //assert
+            Assert.Throws<ItemNotFoundException>(() => _dockGrid.Remove(_secondPanel));
+        }
+
+        [StaFact]
+        public void RemoveNotFrameworkElement()
+        {
+            //assert
+            Assert.Throws<NotFrameworkElement>(() => _dockGrid.Remove(new Mocks.DockPanel()));
+        }
     }
 }

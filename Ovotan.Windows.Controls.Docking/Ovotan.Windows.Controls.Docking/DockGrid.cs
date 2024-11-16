@@ -1,14 +1,6 @@
 using Ovotan.Windows.Controls.Docking.Exceptions;
-using Ovotan.Windows.Controls.Docking.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Ovotan.Windows.Controls.Docking
 {
@@ -17,6 +9,8 @@ namespace Ovotan.Windows.Controls.Docking
     }
     public interface IDockGrid : IDockGridChild
     {
+        int RowCount { get; }
+        int ColumnCount { get; }
         DockGridType Type { get; }
         RowDefinitionCollection RowDefinitions { get; }
         ColumnDefinitionCollection ColumnDefinitions { get; }
@@ -27,29 +21,43 @@ namespace Ovotan.Windows.Controls.Docking
         void AppendBottom(IDockGridChild child);
         void AppendLeft(IDockGridChild child);
         void AppendTop(IDockGridChild child);
+        void Remove(IDockGridChild child);
         DockGrid TransformToDataGrid(IDockGridChild child);
     }
 
+    /// <summary>
+    /// Enum  of types  dockgrid.
+    /// </summary>
     public enum DockGridType
     {
+        /// <summary>
+        /// DockGrid does not contains any child.
+        /// </summary>
+        Empty,
+        /// <summary>
+        /// DockGrid contains single  child.
+        /// </summary>
         Single,
+        /// <summary>
+        /// The DockGrid contains two vertical child elements.
+        /// </summary>
         Vertical,
+        /// <summary>
+        /// The DockGrid contains two horizontal child elements.
+        /// </summary>
         Horizontal
     }
 
     public class DockGrid : Grid, IDockGrid
     {
+        public int RowCount => RowDefinitions.Count;
+
+        public int ColumnCount => ColumnDefinitions.Count;  
+
         /// <summary>
         /// Get - Type of DockPanel
         /// </summary>
         public DockGridType Type { get; private set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public DockGrid()
-        {
-        }
 
         /// <summary>
         /// Append a child.
@@ -258,13 +266,51 @@ namespace Ovotan.Windows.Controls.Docking
                 {
                     throw new ItemNotFoundException();
                 }
-                Children.Remove(frameworkElement);
                 var grid = new DockGrid();
-                grid.Append(child);
                 SetRow(grid, GetRow(frameworkElement));
                 SetColumn(grid, GetColumn(frameworkElement));
+                Children.Remove(frameworkElement);
                 Children.Insert(childIndex, grid);
+                grid.Append(child);
                 return grid;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        public void Remove(IDockGridChild child)
+        {
+            if (child is FrameworkElement frameworkElement)
+            {
+                var childIndex = Children.IndexOf(frameworkElement);
+                if (childIndex == -1)
+                {
+                    throw new ItemNotFoundException();
+                }
+                Children.Remove(frameworkElement);
+                if(ColumnDefinitions.Count == 3)
+                {
+                    ColumnDefinitions.RemoveRange(1, 2);
+                }
+                if(RowDefinitions.Count == 3)
+                {
+                    RowDefinitions.RemoveRange(1, 2);
+                }
+                if (Children.Count == 2)
+                {
+                    Children.RemoveAt(1);
+                    SetRow(Children[0], 0);
+                    SetColumn(Children[0], 0);
+                    Type = DockGridType.Single;
+                }
+                else
+                {
+                    RowDefinitions.Clear();
+                    ColumnDefinitions.Clear();
+                    Type = DockGridType.Empty;
+                }
             }
             else
             {
