@@ -21,7 +21,7 @@ namespace Ovotan.Windows.Controls.Docking.Windows
         static DockGridWindow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGridWindow), new FrameworkPropertyMetadata(typeof(Popup)));
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockGridResource.xaml");
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockGridResource.xaml");
         }
 
         public DockGridWindow(FrameworkElement owner)

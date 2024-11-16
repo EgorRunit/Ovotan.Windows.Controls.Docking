@@ -22,7 +22,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
         public void Create()
         {
             //assert
-            Assert.Equal(DockGridType.Single, _dockGrid.Type);
+            Assert.Equal(DockGridType.Empty, _dockGrid.Type);
             Assert.Empty(_dockGrid.RowDefinitions);
         }
 
@@ -351,8 +351,8 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             //assert
             Assert.Empty(_dockGrid.Children);
             Assert.Equal(DockGridType.Empty, _dockGrid.Type);
-            Assert.Equal(0, _dockGrid.RowCount);
-            Assert.Equal(0, _dockGrid.ColumnCount);
+            Assert.Empty(_dockGrid.RowDefinitions);
+            Assert.Empty(_dockGrid.ColumnDefinitions);
         }
 
         [StaFact]
@@ -368,8 +368,8 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Equal(DockGridType.Single, _dockGrid.Type);
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
-            Assert.Equal(1, _dockGrid.RowCount);
-            Assert.Equal(1, _dockGrid.ColumnCount);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
             Assert.Same(_firstPanel, _dockGrid.Children[0]);
         }
 
@@ -386,8 +386,8 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Equal(DockGridType.Single, _dockGrid.Type);
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.RowProperty));
             Assert.Equal(0, _dockGrid.Children[0].GetValue(Grid.ColumnProperty));
-            Assert.Equal(1, _dockGrid.RowCount);
-            Assert.Equal(1, _dockGrid.ColumnCount);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
             Assert.Same(_firstPanel, _dockGrid.Children[0]);
         }
 

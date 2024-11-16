@@ -45,9 +45,10 @@ namespace Ovotan.Windows.Controls.Docking
 
         static DockingHost()
         {
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/CanvasButtonResourcesDictionary.xaml");
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockPanelResourcesDictionary.xaml");
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockHositngSettingsResources.xaml");
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockingHost), new FrameworkPropertyMetadata(typeof(DockingHost)));
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/CanvasButtonResourcesDictionary.xaml");
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockPanelResourcesDictionary.xaml");
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockHositngSettingsResources.xaml");
         }
 
         public DockingHost(IDockingMessageQueue dockingMessageQueue)
@@ -62,8 +63,8 @@ namespace Ovotan.Windows.Controls.Docking
 
             var baseContent = new DockPanel(_dockingMessageQueue, SiteHost as FrameworkElement);
             var grid = new DockGrid();
-            grid.Append(baseContent);
             Content = grid;
+            grid.Append(baseContent);
             
             //Padding = new Thickness(5);
             //Background = new SolidColorBrush(Colors.Red);

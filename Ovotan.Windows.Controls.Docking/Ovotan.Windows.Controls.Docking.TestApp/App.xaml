@@ -5,7 +5,11 @@
              xmlns:ff="clr-namespace:Ovotan.Windows.Controls;assembly=Ovotan.Windows.Controls"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ff:SchemaManager DefaultSchemaName="Blue"/>
-
+        <ResourceDictionary >
+            <ff:SchemaManager x:Key="er" DefaultSchemaName="Blue"/>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Generic.xaml"/>-->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

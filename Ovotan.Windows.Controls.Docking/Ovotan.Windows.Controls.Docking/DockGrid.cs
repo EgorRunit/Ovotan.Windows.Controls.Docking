@@ -1,6 +1,7 @@
 using Ovotan.Windows.Controls.Docking.Exceptions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Ovotan.Windows.Controls.Docking
 {
@@ -9,12 +10,10 @@ namespace Ovotan.Windows.Controls.Docking
     }
     public interface IDockGrid : IDockGridChild
     {
-        int RowCount { get; }
-        int ColumnCount { get; }
         DockGridType Type { get; }
+        UIElementCollection Children { get; }
         RowDefinitionCollection RowDefinitions { get; }
         ColumnDefinitionCollection ColumnDefinitions { get; }
-        UIElementCollection Children { get; }
 
         void Append(IDockGridChild child);
         void AppendRight(IDockGridChild child);
@@ -48,16 +47,38 @@ namespace Ovotan.Windows.Controls.Docking
         Horizontal
     }
 
-    public class DockGrid : Grid, IDockGrid
+    public class DockGrid : ContentControl, IDockGrid
     {
-        public int RowCount => RowDefinitions.Count;
+        Grid _mainGrid;
 
-        public int ColumnCount => ColumnDefinitions.Count;  
+        public UIElementCollection Children => _mainGrid.Children;
+
+        public RowDefinitionCollection RowDefinitions => _mainGrid.RowDefinitions;
+
+        public ColumnDefinitionCollection ColumnDefinitions => _mainGrid.ColumnDefinitions;
 
         /// <summary>
         /// Get - Type of DockPanel
         /// </summary>
         public DockGridType Type { get; private set; }
+
+        static DockGrid()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGrid), new FrameworkPropertyMetadata(typeof(DockGrid)));
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockGridResource.xaml");
+        }
+
+        public DockGrid()
+        {
+            _mainGrid = new Grid();
+            Content = _mainGrid;
+        }
+
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
 
         /// <summary>
         /// Append a child.
@@ -67,18 +88,18 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public void Append(IDockGridChild child)
         {
-            if(Children.Count > 0)
+            if(_mainGrid.Children.Count > 0)
             {
                 throw new TwiceAppendException();
             }
-
             if(child is FrameworkElement frameworkElement)
             {
-                SetRow(frameworkElement, 0);
-                SetColumn(frameworkElement, 0);
-                Children.Add(frameworkElement);
-                RowDefinitions.Add(new RowDefinition());
-                ColumnDefinitions.Add(new ColumnDefinition());
+                frameworkElement.SetValue(Grid.RowProperty, 0);
+                frameworkElement.SetValue(Grid.ColumnProperty, 0);
+                _mainGrid.Children.Add(frameworkElement);
+                _mainGrid.RowDefinitions.Add(new RowDefinition());
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                Type = DockGridType.Single;
             }
             else
             {
@@ -95,30 +116,31 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public void AppendLeft(IDockGridChild child)
         {
-            if (Children.Count == 0)
+            if (_mainGrid.Children.Count == 0)
             {
                 throw new DockGridEmptyException();
             }
-            if (Children.Count == 3)
+            if (_mainGrid.Children.Count == 3)
             {
                 throw new DockGridFullException();
             }
             if (child is FrameworkElement frameworkElement)
             {
+
                 var splitter = new GridSplitter()
                 {
-                    Width = 5,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     ResizeDirection = GridResizeDirection.Columns
                 };
-                ColumnDefinitions.Add(new ColumnDefinition(){ Width = new GridLength(0, GridUnitType.Auto) });
-                ColumnDefinitions.Add(new ColumnDefinition());
-                SetColumn(frameworkElement, 0);
-                SetColumn(splitter, 1);
-                SetColumn(Children[0], 2);
-                Children.Insert(0,frameworkElement);
-                Children.Insert(1, splitter);
+                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition(){ Width = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                frameworkElement.SetValue(Grid.ColumnProperty, 0);
+                splitter.SetValue(Grid.ColumnProperty, 1);
+                _mainGrid.Children[0].SetValue(Grid.ColumnProperty, 2);
+                _mainGrid.Children.Insert(0,frameworkElement);
+                _mainGrid.Children.Insert(1, splitter);
                 Type = DockGridType.Horizontal;
             }
             else
@@ -136,11 +158,11 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public void AppendRight(IDockGridChild child)
         {
-            if (Children.Count == 0)
+            if (_mainGrid.Children.Count == 0)
             {
                 throw new DockGridEmptyException();
             }
-            if (Children.Count == 3)
+            if (_mainGrid.Children.Count == 3)
             {
                 throw new DockGridFullException();
             }
@@ -148,17 +170,17 @@ namespace Ovotan.Windows.Controls.Docking
             {
                 var splitter = new GridSplitter()
                 {
-                    Width = 5,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     ResizeDirection = GridResizeDirection.Columns
                 };
-                ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0, GridUnitType.Auto) });
-                ColumnDefinitions.Add(new ColumnDefinition());
-                SetColumn(splitter, 1);
-                SetColumn(frameworkElement, 2);
-                Children.Add(splitter);
-                Children.Add(frameworkElement);
+                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                splitter.SetValue(Grid.ColumnProperty, 1);
+                frameworkElement.SetValue(Grid.ColumnProperty, 2);
+                _mainGrid.Children.Add(splitter);
+                _mainGrid.Children.Add(frameworkElement);
                 Type = DockGridType.Horizontal;
             }
             else
@@ -176,11 +198,11 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public void AppendTop(IDockGridChild child)
         {
-            if (Children.Count == 0)
+            if (_mainGrid.Children.Count == 0)
             {
                 throw new DockGridEmptyException();
             }
-            if (Children.Count == 3)
+            if (_mainGrid.Children.Count == 3)
             {
                 throw new DockGridFullException();
             }
@@ -188,19 +210,19 @@ namespace Ovotan.Windows.Controls.Docking
             {
                 var splitter = new GridSplitter()
                 {
-                    Height = 5,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
                     ResizeDirection = GridResizeDirection.Rows
 
                 };
-                SetRow(frameworkElement, 0);
-                SetRow(splitter, 1);
-                SetRow(Children[0], 2);
-                RowDefinitions.Add(new RowDefinition() {  Height = new GridLength(0, GridUnitType.Auto) });
-                RowDefinitions.Add(new RowDefinition());
-                Children.Insert(0, frameworkElement);
-                Children.Insert(1, splitter);
+                splitter.SetValue(WidthProperty, WidthProperty.DefaultMetadata.DefaultValue);
+                frameworkElement.SetValue(Grid.RowProperty, 0);
+                splitter.SetValue(Grid.RowProperty, 1);
+                _mainGrid.Children[0].SetValue(Grid.RowProperty, 2);
+                _mainGrid.RowDefinitions.Add(new RowDefinition() {  Height = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.RowDefinitions.Add(new RowDefinition());
+                _mainGrid.Children.Insert(0, frameworkElement);
+                _mainGrid.Children.Insert(1, splitter);
                 Type = DockGridType.Vertical;
             }
             else
@@ -218,11 +240,11 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public void AppendBottom(IDockGridChild child)
         {
-            if (Children.Count == 0)
+            if (_mainGrid.Children.Count == 0)
             {
                 throw new DockGridEmptyException();
             }
-            if (Children.Count == 3)
+            if (_mainGrid.Children.Count == 3)
             {
                 throw new DockGridFullException();
             }
@@ -230,18 +252,18 @@ namespace Ovotan.Windows.Controls.Docking
             {
                 var splitter = new GridSplitter()
                 {
-                    Height = 5,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
                     ResizeDirection = GridResizeDirection.Rows
 
                 };
-                RowDefinitions.Add(new RowDefinition() { Height = new GridLength(0, GridUnitType.Auto) });
-                RowDefinitions.Add(new RowDefinition());
-                SetRow(splitter, 1);
-                SetRow(frameworkElement, 2);
-                Children.Add(splitter);
-                Children.Add(frameworkElement);
+                splitter.SetValue(WidthProperty, WidthProperty.DefaultMetadata.DefaultValue);
+                _mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.RowDefinitions.Add(new RowDefinition());
+                splitter.SetValue(Grid.RowProperty, 1);
+                frameworkElement.SetValue(Grid.RowProperty, 2);
+                _mainGrid.Children.Add(splitter);
+                _mainGrid.Children.Add(frameworkElement);
                 Type = DockGridType.Vertical;
             }
             else
@@ -261,16 +283,16 @@ namespace Ovotan.Windows.Controls.Docking
         {
             if (child is FrameworkElement frameworkElement)
             {
-                var childIndex = Children.IndexOf(frameworkElement);
+                var childIndex = _mainGrid.Children.IndexOf(frameworkElement);
                 if(childIndex == -1)
                 {
                     throw new ItemNotFoundException();
                 }
                 var grid = new DockGrid();
-                SetRow(grid, GetRow(frameworkElement));
-                SetColumn(grid, GetColumn(frameworkElement));
-                Children.Remove(frameworkElement);
-                Children.Insert(childIndex, grid);
+                grid.SetValue(Grid.RowProperty, frameworkElement.GetValue(Grid.RowProperty));
+                grid.SetValue(Grid.ColumnProperty, frameworkElement.GetValue(Grid.ColumnProperty));
+                _mainGrid.Children.Remove(frameworkElement);
+                _mainGrid.Children.Insert(childIndex, grid);
                 grid.Append(child);
                 return grid;
             }
@@ -289,26 +311,26 @@ namespace Ovotan.Windows.Controls.Docking
                 {
                     throw new ItemNotFoundException();
                 }
-                Children.Remove(frameworkElement);
-                if(ColumnDefinitions.Count == 3)
+                _mainGrid.Children.Remove(frameworkElement);
+                if(_mainGrid.ColumnDefinitions.Count == 3)
                 {
-                    ColumnDefinitions.RemoveRange(1, 2);
+                    _mainGrid.ColumnDefinitions.RemoveRange(1, 2);
                 }
-                if(RowDefinitions.Count == 3)
+                if(_mainGrid.RowDefinitions.Count == 3)
                 {
-                    RowDefinitions.RemoveRange(1, 2);
+                    _mainGrid.RowDefinitions.RemoveRange(1, 2);
                 }
-                if (Children.Count == 2)
+                if (_mainGrid.Children.Count == 2)
                 {
-                    Children.RemoveAt(1);
-                    SetRow(Children[0], 0);
-                    SetColumn(Children[0], 0);
+                    _mainGrid.Children.RemoveAt(1);
+                    _mainGrid.Children[0].SetValue(Grid.RowProperty, 0);
+                    _mainGrid.Children[0].SetValue(Grid.ColumnProperty, 0);
                     Type = DockGridType.Single;
                 }
                 else
                 {
-                    RowDefinitions.Clear();
-                    ColumnDefinitions.Clear();
+                    _mainGrid.RowDefinitions.Clear();
+                    _mainGrid.ColumnDefinitions.Clear();
                     Type = DockGridType.Empty;
                 }
             }
