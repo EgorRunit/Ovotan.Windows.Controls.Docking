@@ -1,114 +1,275 @@
+using Ovotan.Windows.Controls.Docking.Exceptions;
+using Ovotan.Windows.Controls.Docking.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Ovotan.Windows.Controls.Docking
 {
-    public class DockGrid : Window
+    public interface IDockGridChild
     {
-        bool _isMouseCaptured;
-        FrameworkElement _owner;
-        FrameworkElement _draggindElement;
-        Action<MouseEventArgs> _mouseMoveCallback;
-        List<OwnerRect> _dockPlaces;
-        Type _dockPlaceType;
-        Point _selfLoaction;
-        OwnerRect _previouslyUnderMouseElement;
-        Canvas _centralArrow;
-        Grid _mainGrid;
+    }
+    public interface IDockGrid : IDockGridChild
+    {
+        DockGridType Type { get; }
+        RowDefinitionCollection RowDefinitions { get; }
+        ColumnDefinitionCollection ColumnDefinitions { get; }
+        UIElementCollection Children { get; }
 
-        static DockGrid()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGrid), new FrameworkPropertyMetadata(typeof(Popup)));
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockGridResource.xaml");
-        }
-
-        public DockGrid(FrameworkElement owner)
-        {
-            _owner = owner;
-            MouseUp += _mouseUp;
-            MouseMove += _mouseMove;
-            WindowStyle = WindowStyle.None;
-            AllowsTransparency = true;
-            Visibility = Visibility.Collapsed;
-            Application.Current.MainWindow.Closing += (s, a) => Close();
-        }
-
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            _centralArrow = Template.FindName("CentralArrow", this) as Canvas;
-            _mainGrid = Template.FindName("MainGrid", this) as Grid;
-        }
-
-        public void Show<T>(FrameworkElement dockElement, Action<MouseEventArgs> mouseMoveCallback) where T: class
-        {
-            var foundPlaces = _owner.FindLogicalChildren<T>();
-            _dockPlaces = new List<OwnerRect>(foundPlaces.Count());
-            _selfLoaction = _owner.PointToScreen(new Point());
-
-            foreach (var element in foundPlaces)
-            {
-                var frameworkElement = element as FrameworkElement;
-                var startPoint = (element as FrameworkElement).PointToScreen(new Point());
-                _dockPlaces.Add(new OwnerRect(frameworkElement, startPoint.X, startPoint.Y, startPoint.X + frameworkElement.ActualWidth, startPoint.Y + frameworkElement.ActualHeight));
-            }
-            //добавить хост в качестве последнего места
-
-            _previouslyUnderMouseElement = null;
-            _draggindElement = dockElement;
-            _isMouseCaptured = true;
-            _mouseMoveCallback = mouseMoveCallback;
-
-            Top = _selfLoaction.Y;
-            Left = _selfLoaction.X;
-            Height = _owner.ActualHeight;
-            Width = _owner.ActualWidth;
-            Show();
-            Mouse.Capture(this, CaptureMode.SubTree);
-        }
-
-        void _mouseMove(object sender, MouseEventArgs e)
-        {
-            if (_isMouseCaptured)
-            {
-                Point mousePosition = e.GetPosition(this);
-                var x = mousePosition.X + _selfLoaction.X;
-                var y = mousePosition.Y + _selfLoaction.Y;
-                var foundDockPlace = _dockPlaces.FindElementFromPoint(new Point(x, y));
-                if (foundDockPlace != null)
-                {
-                    if (foundDockPlace != _previouslyUnderMouseElement)
-                    {
-                        Point relativeLocation = foundDockPlace.Owner.TranslatePoint(new Point(0, 0), this);
-                        var top = (foundDockPlace.Owner.ActualHeight - _centralArrow.ActualHeight) / 2 + relativeLocation.Y;
-                        var left = (foundDockPlace.Owner.ActualWidth - _centralArrow.ActualWidth) / 2 + relativeLocation.X;
-                        _centralArrow.SetValue(Canvas.TopProperty, top);
-                        _centralArrow.SetValue(Canvas.LeftProperty, left);
-                        _previouslyUnderMouseElement = foundDockPlace;
-                    }
-                    if (_mainGrid.Visibility != Visibility.Visible)
-                    {
-                        _mainGrid.Visibility = Visibility.Visible;
-                    }
-                }
-                else
-                {
-                    _mainGrid.Visibility = Visibility.Hidden;
-                }
-                _mouseMoveCallback(e);
-            }
-        }
-
-        void _mouseUp(object sender, MouseButtonEventArgs e)
-        {
-            _isMouseCaptured = false;
-            _previouslyUnderMouseElement = null;
-            Hide();
-            ReleaseMouseCapture();
-        }
+        void Append(IDockGridChild child);
+        void AppendRight(IDockGridChild child);
+        void AppendBottom(IDockGridChild child);
+        void AppendLeft(IDockGridChild child);
+        void AppendTop(IDockGridChild child);
+        DockGrid TransformToDataGrid(IDockGridChild child);
     }
 
+    public enum DockGridType
+    {
+        Single,
+        Vertical,
+        Horizontal
+    }
+
+    public class DockGrid : Grid, IDockGrid
+    {
+        /// <summary>
+        /// Get - Type of DockPanel
+        /// </summary>
+        public DockGridType Type { get; private set; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public DockGrid()
+        {
+        }
+
+        /// <summary>
+        /// Append a child.
+        /// </summary>
+        /// <param name="child">Instance of DockGridChild.</param>
+        /// <exception cref="TwiceAppendException">Occurs when call append twice.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public void Append(IDockGridChild child)
+        {
+            if(Children.Count > 0)
+            {
+                throw new TwiceAppendException();
+            }
+
+            if(child is FrameworkElement frameworkElement)
+            {
+                SetRow(frameworkElement, 0);
+                SetColumn(frameworkElement, 0);
+                Children.Add(frameworkElement);
+                RowDefinitions.Add(new RowDefinition());
+                ColumnDefinitions.Add(new ColumnDefinition());
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        /// <summary>
+        /// Append a child to the left side.
+        /// </summary>
+        /// <param name="child">Instance of DockGridChild.</param>
+        /// <exception cref="DockGridEmptyException">Occurs when DockGrid have not children.</exception>
+        /// <exception cref="DockGridFullException">Occurs when DockGrid full children.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public void AppendLeft(IDockGridChild child)
+        {
+            if (Children.Count == 0)
+            {
+                throw new DockGridEmptyException();
+            }
+            if (Children.Count == 3)
+            {
+                throw new DockGridFullException();
+            }
+            if (child is FrameworkElement frameworkElement)
+            {
+                var splitter = new GridSplitter()
+                {
+                    Width = 5,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    ResizeDirection = GridResizeDirection.Columns
+                };
+                ColumnDefinitions.Add(new ColumnDefinition(){ Width = new GridLength(0, GridUnitType.Auto) });
+                ColumnDefinitions.Add(new ColumnDefinition());
+                SetColumn(frameworkElement, 0);
+                SetColumn(splitter, 1);
+                SetColumn(Children[0], 2);
+                Children.Insert(0,frameworkElement);
+                Children.Insert(1, splitter);
+                Type = DockGridType.Horizontal;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        /// <summary>
+        /// Append a child to the right side.
+        /// </summary>
+        /// <param name="child">Instance of DockGridChild.</param>
+        /// <exception cref="DockGridEmptyException">Occurs when DockGrid have not children.</exception>
+        /// <exception cref="DockGridFullException">Occurs when DockGrid full children.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public void AppendRight(IDockGridChild child)
+        {
+            if (Children.Count == 0)
+            {
+                throw new DockGridEmptyException();
+            }
+            if (Children.Count == 3)
+            {
+                throw new DockGridFullException();
+            }
+            if (child is FrameworkElement frameworkElement)
+            {
+                var splitter = new GridSplitter()
+                {
+                    Width = 5,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    ResizeDirection = GridResizeDirection.Columns
+                };
+                ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0, GridUnitType.Auto) });
+                ColumnDefinitions.Add(new ColumnDefinition());
+                SetColumn(splitter, 1);
+                SetColumn(frameworkElement, 2);
+                Children.Add(splitter);
+                Children.Add(frameworkElement);
+                Type = DockGridType.Horizontal;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        /// <summary>
+        /// Append a child to the top side.
+        /// </summary>
+        /// <param name="panel">Instance of panel.</param>
+        /// <exception cref="DockGridEmptyException">Occurs when DockGrid have not children.</exception>
+        /// <exception cref="DockGridFullException">Occurs when DockGrid full children.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public void AppendTop(IDockGridChild child)
+        {
+            if (Children.Count == 0)
+            {
+                throw new DockGridEmptyException();
+            }
+            if (Children.Count == 3)
+            {
+                throw new DockGridFullException();
+            }
+            if (child is FrameworkElement frameworkElement)
+            {
+                var splitter = new GridSplitter()
+                {
+                    Height = 5,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    ResizeDirection = GridResizeDirection.Rows
+
+                };
+                SetRow(frameworkElement, 0);
+                SetRow(splitter, 1);
+                SetRow(Children[0], 2);
+                RowDefinitions.Add(new RowDefinition() {  Height = new GridLength(0, GridUnitType.Auto) });
+                RowDefinitions.Add(new RowDefinition());
+                Children.Insert(0, frameworkElement);
+                Children.Insert(1, splitter);
+                Type = DockGridType.Vertical;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        /// <summary>
+        /// Append a child to the bottom side.
+        /// </summary>
+        /// <param name="child">Instance of DockGridChild.</param>
+        /// <exception cref="DockGridEmptyException">Occurs when DockGrid have not children.</exception>
+        /// <exception cref="DockGridFullException">Occurs when DockGrid full children.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public void AppendBottom(IDockGridChild child)
+        {
+            if (Children.Count == 0)
+            {
+                throw new DockGridEmptyException();
+            }
+            if (Children.Count == 3)
+            {
+                throw new DockGridFullException();
+            }
+            if (child is FrameworkElement frameworkElement)
+            {
+                var splitter = new GridSplitter()
+                {
+                    Height = 5,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    ResizeDirection = GridResizeDirection.Rows
+
+                };
+                RowDefinitions.Add(new RowDefinition() { Height = new GridLength(0, GridUnitType.Auto) });
+                RowDefinitions.Add(new RowDefinition());
+                SetRow(splitter, 1);
+                SetRow(frameworkElement, 2);
+                Children.Add(splitter);
+                Children.Add(frameworkElement);
+                Type = DockGridType.Vertical;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+
+        /// <summary>
+        /// Transform DockGridChild to DockGrid.
+        /// </summary>
+        /// <param name="child">Instance of DockGridChild.</param>
+        /// <returns>DockGrid with instance oanel.</returns>
+        /// <exception cref="ItemNotFoundException">Occurs when the panel is not found in the child elements.</exception>
+        /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
+        public DockGrid TransformToDataGrid(IDockGridChild child)
+        {
+            if (child is FrameworkElement frameworkElement)
+            {
+                var childIndex = Children.IndexOf(frameworkElement);
+                if(childIndex == -1)
+                {
+                    throw new ItemNotFoundException();
+                }
+                Children.Remove(frameworkElement);
+                var grid = new DockGrid();
+                grid.Append(child);
+                SetRow(grid, GetRow(frameworkElement));
+                SetColumn(grid, GetColumn(frameworkElement));
+                Children.Insert(childIndex, grid);
+                return grid;
+            }
+            else
+            {
+                throw new NotFrameworkElement();
+            }
+        }
+    }
 }

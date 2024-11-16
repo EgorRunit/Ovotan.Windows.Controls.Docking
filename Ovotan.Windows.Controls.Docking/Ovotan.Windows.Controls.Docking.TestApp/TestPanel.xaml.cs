@@ -1,4 +1,5 @@
-﻿using System;
+using Ovotan.Windows.Controls.Docking.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +19,13 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
     /// <summary>
     /// Interaction logic for TestPanel.xaml
     /// </summary>
-    public partial class TestPanel : UserControl
+    public partial class TestPanel : UserControl, IDockPanel
     {
         public TestPanel()
         {
             InitializeComponent();
         }
+
+        public string Header => throw new NotImplementedException();
     }
 }

@@ -48,6 +48,11 @@ namespace Ovotan.Windows.Controls.Docking
                 new PropertyMetadata(false));
         }
 
+        public DockPanel()
+        {
+
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();

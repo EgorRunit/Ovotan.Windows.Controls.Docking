@@ -10,9 +10,17 @@ using System.Windows.Media;
 
 namespace Ovotan.Windows.Controls.Docking
 {
-    public class DockingHost : ContentControl
+    public interface IDockingHost
     {
-        public DockGrid _panelDragGrid;
+        void AttachToLeft(IDockPanel panel);
+        void AttachToTop(IDockPanel panel);
+        void AttachToRight(IDockPanel panel);
+        void AttachToBottom(IDockPanel panel);
+    }
+
+    public class DockingHost : ContentControl, IDockingHost
+    {
+        public DockGridWindow _panelDragGrid;
         /// <summary>
         /// Ссылка на последнию активную панель.
         /// </summary>
@@ -27,6 +35,14 @@ namespace Ovotan.Windows.Controls.Docking
         public IDockingMessageQueue _dockingMessageQueue;
         public ISiteHost SiteHost { get; set; }
 
+        public DockGrid DockGrid
+        {
+            get
+            {
+                return Content as DockGrid;
+            }
+        }
+
         static DockingHost()
         {
             SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/CanvasButtonResourcesDictionary.xaml");
@@ -37,17 +53,18 @@ namespace Ovotan.Windows.Controls.Docking
         public DockingHost(IDockingMessageQueue dockingMessageQueue)
         {
             _dockingMessageQueue = dockingMessageQueue;
-            _panelDragGrid = new DockGrid(this);
+            _panelDragGrid = new DockGridWindow(this);
             _dockingMessageQueue.Register(DockingMessageType.PanelClosed, (x) => _dockConstractureService.RemovePanel(x as DockPanel));
-            _dockingMessageQueue.Register(DockingMessageType.PanelSplitted, (x) => _dockConstractureService.SplitPanel(x as PanelSplittedMessage));
-            _dockingMessageQueue.Register(DockingMessageType.PanelAttached, (x) => _panelAttached((PanelAttachedMessage)x));
             _dockingMessageQueue.Register(DockingMessageType.ShowDockPanelWindow, (x) => ShowDockPanelWindow(x as FrameworkElement));
             _dockConstractureService = new DockConstractureService(_dockingMessageQueue);
 
             SiteHost = new SiteHost(_dockingMessageQueue);
 
             var baseContent = new DockPanel(_dockingMessageQueue, SiteHost as FrameworkElement);
-            Content = new PanelContainer(baseContent);
+            var grid = new DockGrid();
+            grid.Append(baseContent);
+            Content = grid;
+            
             //Padding = new Thickness(5);
             //Background = new SolidColorBrush(Colors.Red);
             Mouse.AddPreviewMouseDownHandler(this, (x, y) =>
@@ -66,16 +83,38 @@ namespace Ovotan.Windows.Controls.Docking
 
         }
 
-        #region DockingManagerMessageQueue handlers
-        void _panelAttached(PanelAttachedMessage message)
+        public void AttachToLeft(IDockPanel panel)
         {
-            _dockConstractureService.AttachPanel(message.Type, this, message.DockPanelContent);
+            var grid = DockGrid;
+            Content = new DockGrid();
+            DockGrid.Append(grid);
+            DockGrid.AppendLeft(panel);
         }
 
-        public void AttachPanelDock(PanelAttachedType panelAttachedType, FrameworkElement dockPanelContent)
+        public void AttachToTop(IDockPanel panel)
         {
-            _dockConstractureService.AttachPanel(panelAttachedType, this, dockPanelContent);
+            var grid = DockGrid;
+            Content = new DockGrid();
+            DockGrid.Append(grid);
+            DockGrid.AppendTop(panel);
         }
+
+        public void AttachToRight(IDockPanel panel)
+        {
+            var grid = DockGrid;
+            Content = new DockGrid();
+            DockGrid.Append(grid);
+            DockGrid.AppendRight(panel);
+        }
+
+        public void AttachToBottom(IDockPanel panel)
+        {
+            var grid = DockGrid;
+            Content = new DockGrid();
+            DockGrid.Append(grid);
+            DockGrid.AppendBottom(panel);
+        }
+
 
 
         public void ShowDockPanelWindow(FrameworkElement DockPanelContent)
@@ -84,6 +123,5 @@ namespace Ovotan.Windows.Controls.Docking
             window.Initialize(_dockingMessageQueue);
             window.Show();
         }
-        #endregion
     }
 }

@@ -33,21 +33,21 @@ namespace Ovotan.Windows.Controls.Docking.Services
             var panel = parent.Children[0] as FrameworkElement;
             FrameworkElement newPanelContainer = null;
             parent.Children.Clear();
-            switch (type)
-            {
-                case PanelAttachedType.Left:
-                    newPanelContainer = new PanelHorizontalContainer(PanelSplittedType.Left,dockingHost.ActualWidth.GetPercent(percent), panel, added);
-                    break;
-                case PanelAttachedType.Right:
-                    newPanelContainer = new PanelHorizontalContainer(PanelSplittedType.Right, dockingHost.ActualWidth.GetPercent(percent), panel, added);
-                    break;
-                case PanelAttachedType.Top:
-                    newPanelContainer = new PanelVerticalContainer(PanelSplittedType.Top, dockingHost.ActualHeight.GetPercent(percent), panel, added);
-                    break;
-                case PanelAttachedType.Bottom:
-                    newPanelContainer = new PanelVerticalContainer(PanelSplittedType.Bottom, dockingHost.ActualHeight.GetPercent(percent), panel, added);
-                    break;
-            }
+            //switch (type)
+            //{
+            //    case PanelAttachedType.Left:
+            //        newPanelContainer = new PanelHorizontalContainer(PanelSplittedType.Left,dockingHost.ActualWidth.GetPercent(percent), panel, added);
+            //        break;
+            //    case PanelAttachedType.Right:
+            //        newPanelContainer = new PanelHorizontalContainer(PanelSplittedType.Right, dockingHost.ActualWidth.GetPercent(percent), panel, added);
+            //        break;
+            //    case PanelAttachedType.Top:
+            //        newPanelContainer = new PanelVerticalContainer(PanelSplittedType.Top, dockingHost.ActualHeight.GetPercent(percent), panel, added);
+            //        break;
+            //    case PanelAttachedType.Bottom:
+            //        newPanelContainer = new PanelVerticalContainer(PanelSplittedType.Bottom, dockingHost.ActualHeight.GetPercent(percent), panel, added);
+            //        break;
+            //}
             parent.Children.Add(newPanelContainer);
             
 
@@ -68,26 +68,26 @@ namespace Ovotan.Windows.Controls.Docking.Services
             var parentRowIndex = (int)panel.GetValue(Grid.RowProperty);
             parent.Children.Remove(panel);
 
-            var added = new doc.DockPanel(_messageQueue, args.DockPanelContent);
-            switch (args.SplitType)
-            {
-                case PanelSplittedType.Right:
-                case PanelSplittedType.Left:
-                    dockGrid = new PanelHorizontalContainer(args.SplitType, panel.ActualWidth.GetPercent(percent), panel, added);
-                    dockGrid.SetValue(Grid.ColumnProperty, parentColumnIndex);
-                    dockGrid.SetValue(Grid.RowProperty, parentRowIndex);
-                    parent.Children.Add(dockGrid);
-                    break;
-                case PanelSplittedType.Top:
-                case PanelSplittedType.Bottom:
-                    dockGrid = new PanelVerticalContainer(args.SplitType, panel.ActualHeight.GetPercent(percent), panel, added);
-                    dockGrid.SetValue(Grid.ColumnProperty, parentColumnIndex);
-                    dockGrid.SetValue(Grid.RowProperty, parentRowIndex);
-                    parent.Children.Add(dockGrid);
-                    break;
-                default:
-                    throw new Exception("ee");
-            }
+            //var added = new doc.DockPanel(_messageQueue, args.DockPanelContent);
+            //switch (args.SplitType)
+            //{
+            //    case PanelSplittedType.Right:
+            //    case PanelSplittedType.Left:
+            //        dockGrid = new PanelHorizontalContainer(args.SplitType, panel.ActualWidth.GetPercent(percent), panel, added);
+            //        dockGrid.SetValue(Grid.ColumnProperty, parentColumnIndex);
+            //        dockGrid.SetValue(Grid.RowProperty, parentRowIndex);
+            //        parent.Children.Add(dockGrid);
+            //        break;
+            //    case PanelSplittedType.Top:
+            //    case PanelSplittedType.Bottom:
+            //        dockGrid = new PanelVerticalContainer(args.SplitType, panel.ActualHeight.GetPercent(percent), panel, added);
+            //        dockGrid.SetValue(Grid.ColumnProperty, parentColumnIndex);
+            //        dockGrid.SetValue(Grid.RowProperty, parentRowIndex);
+            //        parent.Children.Add(dockGrid);
+            //        break;
+            //    default:
+            //        throw new Exception("ee");
+            //}
         }
         #endregion
 

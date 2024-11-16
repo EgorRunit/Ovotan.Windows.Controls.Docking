@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ovotan.Windows.Controls.Docking", "Ovotan.Windows.Controls.Docking\Ovotan.Windows.Controls.Docking.csproj", "{55E84755-097A-42F3-A12A-6230328139BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ovotan.Windows.Controls.Docking", "Ovotan.Windows.Controls.Docking\Ovotan.Windows.Controls.Docking.csproj", "{55E84755-097A-42F3-A12A-6230328139BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ovotan.Windows.Controls", "..\..\Ovotan.Windows.Controls\Ovotan.Windows.Controls\Ovotan.Windows.Controls.csproj", "{1192CCAA-16E7-43E4-A3B7-6B85F4D261D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ovotan.Windows.Controls.Docking.TestApp", "Ovotan.Windows.Controls.Docking.TestApp\Ovotan.Windows.Controls.Docking.TestApp.csproj", "{C8686616-A803-402B-BAD8-41D8162F95E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ovotan.Windows.Controls.Docking.TestApp", "Ovotan.Windows.Controls.Docking.TestApp\Ovotan.Windows.Controls.Docking.TestApp.csproj", "{C8686616-A803-402B-BAD8-41D8162F95E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ovotan.Windows.Controls.Docking.UnitTest", "Ovotan.Windows.Controls.Docking.UnitTest\Ovotan.Windows.Controls.Docking.UnitTest.csproj", "{AAA0E32C-CA32-4FCD-B027-7236B2804E0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{C8686616-A803-402B-BAD8-41D8162F95E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8686616-A803-402B-BAD8-41D8162F95E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8686616-A803-402B-BAD8-41D8162F95E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA0E32C-CA32-4FCD-B027-7236B2804E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA0E32C-CA32-4FCD-B027-7236B2804E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA0E32C-CA32-4FCD-B027-7236B2804E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA0E32C-CA32-4FCD-B027-7236B2804E0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

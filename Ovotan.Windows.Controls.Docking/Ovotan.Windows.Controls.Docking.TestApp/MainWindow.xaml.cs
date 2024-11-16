@@ -31,24 +31,24 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            _host.AttachPanelDock(Enums.PanelAttachedType.Left, new TestPanel());
+            _host.DockGrid.AppendLeft(new TestPanel());
         }
 
         private void _attachPanelLeft(object sender, RoutedEventArgs e)
         {
-            _host.AttachPanelDock(Enums.PanelAttachedType.Left, new TestPanel());
+            _host.AttachToLeft(new TestPanel());
         }
         private void _attachPanelRight(object sender, RoutedEventArgs e)
         {
-            _host.AttachPanelDock(Enums.PanelAttachedType.Right, new TestPanel());
+            _host.AttachToRight(new TestPanel());
         }
         private void _attachPanelTop(object sender, RoutedEventArgs e)
         {
-            _host.AttachPanelDock(Enums.PanelAttachedType.Top, new TestPanel());
+            _host.AttachToTop(new TestPanel());
         }
         private void _attachPanelBottom(object sender, RoutedEventArgs e)
         {
-            _host.AttachPanelDock(Enums.PanelAttachedType.Bottom, new TestPanel());
+            _host.AttachToBottom(new TestPanel());
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
