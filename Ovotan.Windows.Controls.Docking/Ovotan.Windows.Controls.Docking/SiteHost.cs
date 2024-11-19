@@ -25,10 +25,9 @@ namespace Ovotan.Windows.Controls.Docking
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SiteHost), new FrameworkPropertyMetadata(typeof(SiteHost)));
         }
 
-
-        public SiteHost(IDockingMessageQueue dockingMessageQueue)
+        public SiteHost()
         {
-            _dockingMessageQueue = dockingMessageQueue;
+            _documents = new Dictionary<Guid, ISiteHostDocument>();
         }
 
         public void AddDocument(ISiteHostDocument document)
@@ -70,7 +69,6 @@ namespace Ovotan.Windows.Controls.Docking
         {
             base.OnApplyTemplate();
             _tabControl = Template.FindName("TabControl", this) as TabControl;
-            _documents = new Dictionary<Guid, ISiteHostDocument>();
         }
 
     }

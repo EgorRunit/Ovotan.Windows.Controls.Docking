@@ -85,7 +85,6 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Same(_firstPanel, _dockGrid.Children[2]);
             Assert.IsType<GridSplitter>(_dockGrid.Children[1]);
             Assert.Equal(GridResizeDirection.Columns, (_dockGrid.Children[1] as GridSplitter).ResizeDirection);
-            Assert.True(_dockGrid.ColumnDefinitions[1].Width.IsAuto);
         }
 
         [StaFact]
@@ -142,7 +141,6 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Same(_secondPanel, _dockGrid.Children[2]);
             Assert.IsType<GridSplitter>(_dockGrid.Children[1]);
             Assert.Equal(GridResizeDirection.Columns, (_dockGrid.Children[1] as GridSplitter).ResizeDirection);
-            Assert.True(_dockGrid.ColumnDefinitions[1].Width.IsAuto);
         }
 
         [StaFact]
@@ -201,7 +199,6 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Same(_secondPanel, _dockGrid.Children[0]);
             Assert.IsType<GridSplitter>(_dockGrid.Children[1]);
             Assert.Equal(GridResizeDirection.Rows, (_dockGrid.Children[1] as GridSplitter).ResizeDirection);
-            Assert.True(_dockGrid.RowDefinitions[1].Height.IsAuto);
         }
 
         [StaFact]
@@ -259,7 +256,6 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Same(_secondPanel, _dockGrid.Children[2]);
             Assert.IsType<GridSplitter>(_dockGrid.Children[1]);
             Assert.Equal(GridResizeDirection.Rows, (_dockGrid.Children[1] as GridSplitter).ResizeDirection);
-            Assert.True(_dockGrid.RowDefinitions[1].Height.IsAuto);
         }
 
         [StaFact]

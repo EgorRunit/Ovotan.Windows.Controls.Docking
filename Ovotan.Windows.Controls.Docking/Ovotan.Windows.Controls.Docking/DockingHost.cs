@@ -1,4 +1,5 @@
 using Ovotan.Windows.Controls.Docking.Enums;
+using Ovotan.Windows.Controls.Docking.Exceptions;
 using Ovotan.Windows.Controls.Docking.Interfaces;
 using Ovotan.Windows.Controls.Docking.Messages;
 using Ovotan.Windows.Controls.Docking.Services;
@@ -33,7 +34,7 @@ namespace Ovotan.Windows.Controls.Docking
         /// Экземпляр сервиса очереди сообщений для DockingManager.
         /// </summary>
         public IDockingMessageQueue _dockingMessageQueue;
-        public ISiteHost SiteHost { get; set; }
+        public ISiteHost SiteHost { get; private set; }
 
         public DockGrid DockGrid
         {
@@ -59,15 +60,8 @@ namespace Ovotan.Windows.Controls.Docking
             _dockingMessageQueue.Register(DockingMessageType.ShowDockPanelWindow, (x) => ShowDockPanelWindow(x as FrameworkElement));
             _dockConstractureService = new DockConstractureService(_dockingMessageQueue);
 
-            SiteHost = new SiteHost(_dockingMessageQueue);
+            SetSiteHost(new SiteHost());
 
-            var baseContent = new DockPanel(_dockingMessageQueue, SiteHost as FrameworkElement);
-            var grid = new DockGrid();
-            Content = grid;
-            grid.Append(baseContent);
-            
-            //Padding = new Thickness(5);
-            //Background = new SolidColorBrush(Colors.Red);
             Mouse.AddPreviewMouseDownHandler(this, (x, y) =>
             {
                 if(_oldPanelFocused != null)
@@ -84,36 +78,40 @@ namespace Ovotan.Windows.Controls.Docking
 
         }
 
-        public void AttachToLeft(IDockPanel panel)
+        
+        public void SetSiteHost(SiteHost siteHost)
         {
-            var grid = DockGrid;
-            Content = new DockGrid();
-            DockGrid.Append(grid);
-            DockGrid.AppendLeft(panel);
+            var baseContent = new DockPanel(_dockingMessageQueue, siteHost as FrameworkElement);
+            var grid = new DockGrid();
+            if(SiteHost == null)
+            {
+                SiteHost = siteHost;
+            }
+            grid.Append(siteHost);
+            Content = grid;
         }
 
-        public void AttachToTop(IDockPanel panel)
+
+        public void AttachToLeft(IDockPanel panel)
         {
-            var grid = DockGrid;
-            Content = new DockGrid();
-            DockGrid.Append(grid);
-            DockGrid.AppendTop(panel);
+            this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Left);
         }
 
         public void AttachToRight(IDockPanel panel)
         {
-            var grid = DockGrid;
-            Content = new DockGrid();
-            DockGrid.Append(grid);
-            DockGrid.AppendRight(panel);
+            this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Right);
         }
+
+
+        public void AttachToTop(IDockPanel panel)
+        {
+            this.SiteHostVerticalAttach(panel, VerticalAlignment.Top);
+        }
+
 
         public void AttachToBottom(IDockPanel panel)
         {
-            var grid = DockGrid;
-            Content = new DockGrid();
-            DockGrid.Append(grid);
-            DockGrid.AppendBottom(panel);
+            this.SiteHostVerticalAttach(panel, VerticalAlignment.Bottom);
         }
 
 

@@ -1,6 +1,6 @@
 namespace Ovotan.Windows.Controls.Docking.Interfaces
 {
-    public interface ISiteHost
+    public interface ISiteHost : IDockGridChild
     {
         void AddDocument(ISiteHostDocument document);
         bool ContainsDocument(Guid id);

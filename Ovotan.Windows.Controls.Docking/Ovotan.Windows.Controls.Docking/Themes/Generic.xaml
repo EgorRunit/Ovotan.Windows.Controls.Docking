@@ -5,5 +5,7 @@
         <ff:SchemaManager DefaultSchemaName="Blue"/>
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockingHostResource.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockGridResource.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/SiteHostResource.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockPanelResource.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

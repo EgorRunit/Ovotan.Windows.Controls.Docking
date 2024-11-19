@@ -28,11 +28,11 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
             MainGrid.Children.Add(_host);
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            base.OnInitialized(e);
-            _host.DockGrid.AppendLeft(new TestPanel());
-        }
+        //protected override void OnInitialized(EventArgs e)
+        //{
+        //    base.OnInitialized(e);
+        //    _host.DockGrid.AppendRight(new TestPanel() );
+        //}
 
         private void _attachPanelLeft(object sender, RoutedEventArgs e)
         {

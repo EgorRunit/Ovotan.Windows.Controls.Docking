@@ -21,11 +21,19 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
     /// </summary>
     public partial class TestPanel : UserControl, IDockPanel
     {
+        static int _index = 0;
         public TestPanel()
         {
             InitializeComponent();
+            MainButton.Content = $"button - {_index}";
+            _index++;
         }
 
         public string Header => throw new NotImplementedException();
+
+        public override string ToString()
+        {
+            return $"TestPanel - {_index}";
+        }
     }
 }

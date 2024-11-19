@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Ovotan.Windows.Controls.Docking.UnitTest.Mocks
 {
-    internal class DockPanel : IDockPanel
+    internal class DockPanel : FrameworkElement, IDockPanel
     {
-        public string Header => throw new NotImplementedException();
     }
 }

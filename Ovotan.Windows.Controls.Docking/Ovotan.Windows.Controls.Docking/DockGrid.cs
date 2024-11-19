@@ -1,4 +1,5 @@
 using Ovotan.Windows.Controls.Docking.Exceptions;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -51,6 +52,8 @@ namespace Ovotan.Windows.Controls.Docking
     {
         Grid _mainGrid;
 
+        public static int NewPanelHeightWidthPercent = 30;
+
         public UIElementCollection Children => _mainGrid.Children;
 
         public RowDefinitionCollection RowDefinitions => _mainGrid.RowDefinitions;
@@ -65,11 +68,12 @@ namespace Ovotan.Windows.Controls.Docking
         static DockGrid()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGrid), new FrameworkPropertyMetadata(typeof(DockGrid)));
-            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockGridResource.xaml");
         }
 
+        Guid _id;
         public DockGrid()
         {
+            _id = Guid.NewGuid();
             _mainGrid = new Grid();
             Content = _mainGrid;
         }
@@ -133,14 +137,15 @@ namespace Ovotan.Windows.Controls.Docking
                     VerticalAlignment = VerticalAlignment.Stretch,
                     ResizeDirection = GridResizeDirection.Columns
                 };
-                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
-                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition(){ Width = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 frameworkElement.SetValue(Grid.ColumnProperty, 0);
                 splitter.SetValue(Grid.ColumnProperty, 1);
+                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
                 _mainGrid.Children[0].SetValue(Grid.ColumnProperty, 2);
                 _mainGrid.Children.Insert(0,frameworkElement);
                 _mainGrid.Children.Insert(1, splitter);
+                _lastAppendChild = frameworkElement;
                 Type = DockGridType.Horizontal;
             }
             else
@@ -174,13 +179,14 @@ namespace Ovotan.Windows.Controls.Docking
                     VerticalAlignment = VerticalAlignment.Stretch,
                     ResizeDirection = GridResizeDirection.Columns
                 };
-                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
-                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0, GridUnitType.Auto) });
                 _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                splitter.SetValue(Grid.ColumnProperty, 1);
+                _mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 frameworkElement.SetValue(Grid.ColumnProperty, 2);
+                splitter.SetValue(HeightProperty, HeightProperty.DefaultMetadata.DefaultValue);
+                splitter.SetValue(Grid.ColumnProperty, 1);
                 _mainGrid.Children.Add(splitter);
                 _mainGrid.Children.Add(frameworkElement);
+                _lastAppendChild = frameworkElement;
                 Type = DockGridType.Horizontal;
             }
             else
@@ -188,6 +194,37 @@ namespace Ovotan.Windows.Controls.Docking
                 throw new NotFrameworkElement();
             }
         }
+        FrameworkElement _lastAppendChild = null;
+        protected override Size MeasureOverride(Size constraint)
+        {
+            if (_lastAppendChild != null)
+            {
+                Background = new SolidColorBrush(Colors.Red);
+                if (Type == DockGridType.Horizontal)
+                {
+                    var childIndex = (int)_lastAppendChild.GetValue(Grid.ColumnProperty);
+                    var contentIndex = childIndex == 2 ? 0 : 2;
+                    _mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
+                    _mainGrid.ColumnDefinitions[childIndex].Width = new GridLength(_lastAppendChild.Width, GridUnitType.Pixel);
+                    _mainGrid.ColumnDefinitions[contentIndex].Width = new GridLength(100, GridUnitType.Star);
+                    _lastAppendChild.ClearValue(WidthProperty);
+                }
+                else
+                {
+                    var rowIndex = (int)_lastAppendChild.GetValue(Grid.RowProperty);
+                    var contentIndex = rowIndex == 2 ? 0 : 2;
+                    _mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+                    _mainGrid.RowDefinitions[rowIndex].Height = new GridLength(_lastAppendChild.Height, GridUnitType.Pixel);
+                    _mainGrid.RowDefinitions[contentIndex].Height = new GridLength(100, GridUnitType.Star);
+                    _lastAppendChild.ClearValue(HeightProperty);
+                }
+                _lastAppendChild.HorizontalAlignment = HorizontalAlignment.Stretch;
+                _lastAppendChild.VerticalAlignment = VerticalAlignment.Stretch;
+                _lastAppendChild = null;
+            }
+            return base.MeasureOverride(constraint);
+        }
+
 
         /// <summary>
         /// Append a child to the top side.
@@ -215,14 +252,15 @@ namespace Ovotan.Windows.Controls.Docking
                     ResizeDirection = GridResizeDirection.Rows
 
                 };
-                splitter.SetValue(WidthProperty, WidthProperty.DefaultMetadata.DefaultValue);
                 frameworkElement.SetValue(Grid.RowProperty, 0);
+                splitter.SetValue(WidthProperty, WidthProperty.DefaultMetadata.DefaultValue);
                 splitter.SetValue(Grid.RowProperty, 1);
                 _mainGrid.Children[0].SetValue(Grid.RowProperty, 2);
-                _mainGrid.RowDefinitions.Add(new RowDefinition() {  Height = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.RowDefinitions.Add(new RowDefinition());
                 _mainGrid.RowDefinitions.Add(new RowDefinition());
                 _mainGrid.Children.Insert(0, frameworkElement);
                 _mainGrid.Children.Insert(1, splitter);
+                _lastAppendChild = frameworkElement;
                 Type = DockGridType.Vertical;
             }
             else
@@ -258,12 +296,13 @@ namespace Ovotan.Windows.Controls.Docking
 
                 };
                 splitter.SetValue(WidthProperty, WidthProperty.DefaultMetadata.DefaultValue);
-                _mainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(0, GridUnitType.Auto) });
+                _mainGrid.RowDefinitions.Add(new RowDefinition());
                 _mainGrid.RowDefinitions.Add(new RowDefinition());
                 splitter.SetValue(Grid.RowProperty, 1);
                 frameworkElement.SetValue(Grid.RowProperty, 2);
                 _mainGrid.Children.Add(splitter);
                 _mainGrid.Children.Add(frameworkElement);
+                _lastAppendChild = frameworkElement;
                 Type = DockGridType.Vertical;
             }
             else
@@ -291,6 +330,9 @@ namespace Ovotan.Windows.Controls.Docking
                 var grid = new DockGrid();
                 grid.SetValue(Grid.RowProperty, frameworkElement.GetValue(Grid.RowProperty));
                 grid.SetValue(Grid.ColumnProperty, frameworkElement.GetValue(Grid.ColumnProperty));
+                //grid.SetValue(HeightProperty, frameworkElement.GetValue(HeightProperty));
+                //grid.SetValue(WidthProperty, frameworkElement.GetValue(WidthProperty));
+                Debug.WriteLine("transform id " + grid._id);
                 _mainGrid.Children.Remove(frameworkElement);
                 _mainGrid.Children.Insert(childIndex, grid);
                 grid.Append(child);
@@ -338,6 +380,11 @@ namespace Ovotan.Windows.Controls.Docking
             {
                 throw new NotFrameworkElement();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Type={Type}";
         }
     }
 }
