@@ -37,7 +37,7 @@ namespace Ovotan.Windows.Controls.Docking
 
         //Экземпляр вставляемого содержимого панели.
         public FrameworkElement DockPanelContent;
-        public string Header { get; private set; }
+        public string Header { get; set; }
         public ICommand CloseCommand { get; set; }
         public ICommand PinButton { get;set; }
 

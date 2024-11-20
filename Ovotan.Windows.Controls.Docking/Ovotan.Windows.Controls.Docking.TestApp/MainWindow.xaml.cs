@@ -16,6 +16,7 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        int _headerIndex;
         DockingHost _host;
         DockingMessageQueue _queue;
 
@@ -28,32 +29,32 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
             MainGrid.Children.Add(_host);
         }
 
-        //protected override void OnInitialized(EventArgs e)
-        //{
-        //    base.OnInitialized(e);
-        //    _host.DockGrid.AppendRight(new TestPanel() );
-        //}
 
         private void _attachPanelLeft(object sender, RoutedEventArgs e)
         {
-            _host.AttachToLeft(new TestPanel());
+            _headerIndex++;
+            _host.AttachToSiteHost(new DockPanel() { Header = $"Header {_headerIndex}"}, Dock.Left);
         }
         private void _attachPanelRight(object sender, RoutedEventArgs e)
         {
-            _host.AttachToRight(new TestPanel());
+            _headerIndex++;
+            _host.AttachToSiteHost(new DockPanel() { Header = $"Header {_headerIndex}" }, Dock.Right);
         }
         private void _attachPanelTop(object sender, RoutedEventArgs e)
         {
-            _host.AttachToTop(new TestPanel());
+            _headerIndex++;
+            _host.AttachToSiteHost(new DockPanel() { Header = $"Header {_headerIndex}" }, Dock.Top);
         }
         private void _attachPanelBottom(object sender, RoutedEventArgs e)
         {
-            _host.AttachToBottom(new TestPanel());
+            _headerIndex++;
+            _host.AttachToSiteHost(new DockPanel() { Header = $"Header {_headerIndex}" }, Dock.Bottom);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new TestPanel());
+            _headerIndex++;
+            _queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new DockPanel());
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)

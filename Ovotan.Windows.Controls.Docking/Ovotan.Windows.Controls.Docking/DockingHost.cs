@@ -4,19 +4,24 @@ using Ovotan.Windows.Controls.Docking.Interfaces;
 using Ovotan.Windows.Controls.Docking.Messages;
 using Ovotan.Windows.Controls.Docking.Services;
 using Ovotan.Windows.Controls.Docking.Windows;
+using System.Printing;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.TextFormatting;
 
 namespace Ovotan.Windows.Controls.Docking
 {
     public interface IDockingHost
     {
-        void AttachToLeft(IDockPanel panel);
-        void AttachToTop(IDockPanel panel);
-        void AttachToRight(IDockPanel panel);
-        void AttachToBottom(IDockPanel panel);
+        /// <summary>
+        /// Attach the panel to the sitehost from the specified side.
+        /// </summary>
+        /// <param name="panel">Instance of panel.</param>
+        /// <param name="dock">The side from which it is attached.</param>
+        void AttachToSiteHost(IDockPanel panel, Dock dock);
     }
 
     public class DockingHost : ContentControl, IDockingHost
@@ -47,9 +52,6 @@ namespace Ovotan.Windows.Controls.Docking
         static DockingHost()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DockingHost), new FrameworkPropertyMetadata(typeof(DockingHost)));
-            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/CanvasButtonResourcesDictionary.xaml");
-            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockPanelResourcesDictionary.xaml");
-            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockHositngSettingsResources.xaml");
         }
 
         public DockingHost(IDockingMessageQueue dockingMessageQueue)
@@ -78,7 +80,9 @@ namespace Ovotan.Windows.Controls.Docking
 
         }
 
-        
+        /// <summary>
+        /// </summary>
+        /// <param name="siteHost"></param>
         public void SetSiteHost(SiteHost siteHost)
         {
             var baseContent = new DockPanel(_dockingMessageQueue, siteHost as FrameworkElement);
@@ -92,26 +96,29 @@ namespace Ovotan.Windows.Controls.Docking
         }
 
 
-        public void AttachToLeft(IDockPanel panel)
+        /// <summary>
+        /// Attach the panel to the sitehost from the specified side.
+        /// </summary>
+        /// <param name="panel">Instance of panel.</param>
+        /// <param name="dock">The side from which it is attached.</param>
+        public void AttachToSiteHost(IDockPanel panel, Dock dock)
         {
-            this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Left);
-        }
+            switch(dock)
+            {
+                case Dock.Left:
+                    this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Left);
+                    break;
+                case Dock.Top:
+                    this.SiteHostVerticalAttach(panel, VerticalAlignment.Top);
+                    break;
+                case Dock.Right:
+                    this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Right);
+                    break;
+                case Dock.Bottom:
+                    this.SiteHostVerticalAttach(panel, VerticalAlignment.Bottom);
+                    break;
 
-        public void AttachToRight(IDockPanel panel)
-        {
-            this.SiteHostHorizontalAttach(panel, HorizontalAlignment.Right);
-        }
-
-
-        public void AttachToTop(IDockPanel panel)
-        {
-            this.SiteHostVerticalAttach(panel, VerticalAlignment.Top);
-        }
-
-
-        public void AttachToBottom(IDockPanel panel)
-        {
-            this.SiteHostVerticalAttach(panel, VerticalAlignment.Bottom);
+            }
         }
 
 

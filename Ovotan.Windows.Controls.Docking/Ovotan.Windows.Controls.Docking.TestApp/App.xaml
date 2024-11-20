@@ -6,9 +6,8 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary >
-            <ff:SchemaManager x:Key="er" DefaultSchemaName="Blue"/>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Generic.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls;component/Themes/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

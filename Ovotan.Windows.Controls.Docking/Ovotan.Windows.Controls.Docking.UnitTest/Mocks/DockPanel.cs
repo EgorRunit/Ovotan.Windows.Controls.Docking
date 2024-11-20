@@ -8,7 +8,8 @@ using System.Windows;
 
 namespace Ovotan.Windows.Controls.Docking.UnitTest.Mocks
 {
-    internal class DockPanel : FrameworkElement, IDockPanel
+    internal class DockPanel : IDockPanel
     {
+        public string Header { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

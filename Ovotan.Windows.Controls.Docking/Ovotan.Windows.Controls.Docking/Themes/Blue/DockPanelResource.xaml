@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:DockPanel}">
-                    <Grid x:Name="Panel" Background="Transparent">
+                    <Grid x:Name="Panel" Background="White">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
