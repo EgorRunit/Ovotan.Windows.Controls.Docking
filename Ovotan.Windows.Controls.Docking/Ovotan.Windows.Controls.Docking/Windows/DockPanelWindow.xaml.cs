@@ -10,12 +10,12 @@ namespace Ovotan.Windows.Controls.Docking.Windows
     /// </summary>
     public partial class DockPanelWindow : Window, IDockPanelWindow
     {
-        DockGridWindow _dockPlacementWindow;
+        DockPlacementWindow _dockPlacementWindow;
         Point _location;
 
         public FrameworkElement DockPanelContent { get; private set; }
 
-        public DockPanelWindow(DockGridWindow dockPlacementWindow, FrameworkElement contentElement)
+        public DockPanelWindow(DockPlacementWindow dockPlacementWindow, FrameworkElement contentElement)
         {
             _dockPlacementWindow = dockPlacementWindow;
             InitializeComponent();

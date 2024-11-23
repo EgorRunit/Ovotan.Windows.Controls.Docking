@@ -19,7 +19,7 @@ namespace Ovotan.Windows.Controls.Docking
 
     public class DockingHost : ContentControl, IDockingHost
     {
-        public DockGridWindow _panelDragGrid;
+        public DockPlacementWindow _panelDragGrid;
         /// <summary>
         /// Ссылка на последнию активную панель.
         /// </summary>
@@ -44,7 +44,7 @@ namespace Ovotan.Windows.Controls.Docking
 
         public DockingHost()
         {
-            _panelDragGrid = new DockGridWindow(this);
+            _panelDragGrid = new DockPlacementWindow(this);
             SetSiteHost(new SiteHost());
 
             Mouse.AddPreviewMouseDownHandler(this, (x, y) =>

@@ -52,7 +52,7 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             _headerIndex++;
-            //_queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new DockPanel());
+            _host.ShowDockPanelWindow(new TextBlock() { Text="werwejrolijeworijew"});
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)

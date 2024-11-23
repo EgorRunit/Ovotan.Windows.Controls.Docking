@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Ovotan.Windows.Controls.Docking.Windows
 {
-    public class DockGridWindow : Window
+    public class DockPlacementWindow : Window
     {
         bool _isMouseCaptured;
         FrameworkElement _owner;
@@ -19,13 +19,13 @@ namespace Ovotan.Windows.Controls.Docking.Windows
         Canvas _centralArrow;
         Grid _mainGrid;
 
-        static DockGridWindow()
+        static DockPlacementWindow()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGridWindow), new FrameworkPropertyMetadata(typeof(Popup)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockPlacementWindow), new FrameworkPropertyMetadata(typeof(DockPlacementWindow)));
             //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Resources/DockGridResource.xaml");
         }
 
-        public DockGridWindow(FrameworkElement owner)
+        public DockPlacementWindow(FrameworkElement owner)
         {
             _owner = owner;
             MouseUp += _mouseUp;
@@ -33,7 +33,7 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
             Visibility = Visibility.Collapsed;
-            //Application.Current.MainWindow.Closing += (s, a) => Close();
+            Application.Current.MainWindow.Closing += (s, a) => Close();
         }
 
 

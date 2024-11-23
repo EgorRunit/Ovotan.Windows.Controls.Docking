@@ -8,6 +8,6 @@
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockGridResource.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/SiteHostResource.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockPanelResource.xaml"/>
-
+        <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockPlacementWindow.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
