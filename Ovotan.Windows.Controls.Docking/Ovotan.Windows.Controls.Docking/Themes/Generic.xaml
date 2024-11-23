@@ -2,7 +2,7 @@
              xmlns:ff="clr-namespace:Ovotan.Windows.Controls;assembly=Ovotan.Windows.Controls"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls;component/Themes/Generic.xaml"/>
+        <!--<ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls;component/Themes/Generic.xaml"/>-->
 
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockingHostResource.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Ovotan.Windows.Controls.Docking;component/Themes/Blue/DockGridResource.xaml"/>

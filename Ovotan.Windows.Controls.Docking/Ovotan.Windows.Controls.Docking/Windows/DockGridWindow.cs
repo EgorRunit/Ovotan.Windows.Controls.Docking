@@ -33,7 +33,7 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
             Visibility = Visibility.Collapsed;
-            Application.Current.MainWindow.Closing += (s, a) => Close();
+            //Application.Current.MainWindow.Closing += (s, a) => Close();
         }
 
 

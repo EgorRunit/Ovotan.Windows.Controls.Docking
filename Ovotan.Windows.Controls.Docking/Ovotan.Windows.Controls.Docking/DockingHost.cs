@@ -1,16 +1,9 @@
 using Ovotan.Windows.Controls.Docking.Enums;
-using Ovotan.Windows.Controls.Docking.Exceptions;
 using Ovotan.Windows.Controls.Docking.Interfaces;
-using Ovotan.Windows.Controls.Docking.Messages;
-using Ovotan.Windows.Controls.Docking.Services;
 using Ovotan.Windows.Controls.Docking.Windows;
-using System.Printing;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
 
 namespace Ovotan.Windows.Controls.Docking
 {
@@ -31,10 +24,6 @@ namespace Ovotan.Windows.Controls.Docking
         /// Ссылка на последнию активную панель.
         /// </summary>
         DockPanel _oldPanelFocused;
-        /// <summary>
-        /// Экземпляр сервиса для создания контейнеров для DockPanel.
-        /// </summary>
-        IDockConstractureService _dockConstractureService;
         /// <summary>
         /// Экземпляр сервиса очереди сообщений для DockingManager.
         /// </summary>
@@ -58,9 +47,7 @@ namespace Ovotan.Windows.Controls.Docking
         {
             _dockingMessageQueue = dockingMessageQueue;
             _panelDragGrid = new DockGridWindow(this);
-            _dockingMessageQueue.Register(DockingMessageType.PanelClosed, (x) => _dockConstractureService.RemovePanel(x as DockPanel));
-            _dockingMessageQueue.Register(DockingMessageType.ShowDockPanelWindow, (x) => ShowDockPanelWindow(x as FrameworkElement));
-            _dockConstractureService = new DockConstractureService(_dockingMessageQueue);
+            //_dockingMessageQueue.Register(DockingMessageType.ShowDockPanelWindow, (x) => ShowDockPanelWindow(x as FrameworkElement));
 
             SetSiteHost(new SiteHost());
 
