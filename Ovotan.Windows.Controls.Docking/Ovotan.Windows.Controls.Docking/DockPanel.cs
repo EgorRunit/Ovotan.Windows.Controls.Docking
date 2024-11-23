@@ -1,21 +1,29 @@
 using Ovotan.Windows.Controls.Controls;
 using Ovotan.Windows.Controls.Docking.Enums;
 using Ovotan.Windows.Controls.Docking.Interfaces;
-using Ovotan.Windows.Controls.Docking.Messages;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace Ovotan.Windows.Controls.Docking
 {
     public class DockPanel : ContentControl, IDockPanel
     {
         public static DependencyProperty IsPanelFocusedProperty;
+        public static readonly RoutedEvent CloseEvent;
 
-        //Экземпляр очереди сообщений элметов докинга.
-        IDockingMessageQueue _dockMessageQueue;
-        //Экзямпляр грида структуры в шаблоне.
         Grid _panelGrid;
+
+        public event RoutedEventHandler Close
+        {
+            add { AddHandler(CloseEvent, value); }
+            remove { RemoveHandler(CloseEvent, value); }
+        }
+
+        public virtual void OnClose()
+        {
+            RaiseEvent(new RoutedEventArgs(routedEvent: CloseEvent));
+        }
+
 
         public bool IsPanelFocused
         {
@@ -38,14 +46,15 @@ namespace Ovotan.Windows.Controls.Docking
         //Экземпляр вставляемого содержимого панели.
         public FrameworkElement DockPanelContent;
         public string Header { get; set; }
-        public ICommand CloseCommand { get; set; }
-        public ICommand PinButton { get;set; }
 
         static DockPanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DockPanel), new FrameworkPropertyMetadata(typeof(DockPanel)));
+         
             IsPanelFocusedProperty = DependencyProperty.Register("IsPanelFocused", typeof(bool), typeof(DockPanel),
                 new PropertyMetadata(false));
+            // регистрация маршрутизированного события
+            CloseEvent = EventManager.RegisterRoutedEvent("OnClose", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(DockPanel));
         }
 
         public DockPanel()
@@ -53,13 +62,14 @@ namespace Ovotan.Windows.Controls.Docking
 
         }
 
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             var header = Template.FindName("Header", this) as Grid;
             var closeButton = Template.FindName("CloseButton", this) as ViewboxIcon;
             _panelGrid = Template.FindName("Panel", this) as Grid;
-            closeButton.Command = CloseCommand;
+            closeButton.Command = new ButtonCommand<object>(_ => OnClose());
 
             if (!(DockPanelContent is ISiteHost))
             {
@@ -79,25 +89,14 @@ namespace Ovotan.Windows.Controls.Docking
             }
 
         }
-
-        internal DockPanel(IDockingMessageQueue dockMessageQueue, FrameworkElement dockPanelContent)
+        /// <summary>
+        /// Интерфейс должен быть
+        /// </summary>
+        /// <param name="dockPanelContent"></param>
+        internal DockPanel(FrameworkElement dockPanelContent)
         {
             Header = "Object browser";
             DockPanelContent = dockPanelContent;
-            _dockMessageQueue = dockMessageQueue;
-            CloseCommand = new ButtonCommand<object>(_ => _dockMessageQueue.Publish(DockingMessageType.PanelClosed, this));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _buttonHandlers(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            var args = new PanelSplittedMessage() { PanelSplitted = this, SplitType = (PanelSplittedType)button.CommandParameter };
-            _dockMessageQueue.Publish(DockingMessageType.PanelSplitted, args);
         }
     }
 }

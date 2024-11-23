@@ -11,5 +11,7 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest.Mocks
     internal class DockPanel : IDockPanel
     {
         public string Header { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public event RoutedEventHandler Close;
     }
 }

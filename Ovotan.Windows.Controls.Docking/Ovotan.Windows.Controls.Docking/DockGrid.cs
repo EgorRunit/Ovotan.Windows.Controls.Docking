@@ -1,4 +1,5 @@
 using Ovotan.Windows.Controls.Docking.Exceptions;
+using Ovotan.Windows.Controls.Docking.Interfaces;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -130,6 +131,10 @@ namespace Ovotan.Windows.Controls.Docking
             }
             if (child is FrameworkElement frameworkElement)
             {
+                if(child is IDockPanel panel)
+                {
+                    panel.Close += _onPaneClose;
+                }
 
                 var splitter = new GridSplitter()
                 {
@@ -353,26 +358,32 @@ namespace Ovotan.Windows.Controls.Docking
                 {
                     throw new ItemNotFoundException();
                 }
-                _mainGrid.Children.Remove(frameworkElement);
-                if(_mainGrid.ColumnDefinitions.Count == 3)
-                {
-                    _mainGrid.ColumnDefinitions.RemoveRange(1, 2);
-                }
-                if(_mainGrid.RowDefinitions.Count == 3)
-                {
-                    _mainGrid.RowDefinitions.RemoveRange(1, 2);
-                }
-                if (_mainGrid.Children.Count == 2)
+                if (Children.Count == 3)
                 {
                     _mainGrid.Children.RemoveAt(1);
-                    _mainGrid.Children[0].SetValue(Grid.RowProperty, 0);
-                    _mainGrid.Children[0].SetValue(Grid.ColumnProperty, 0);
+                    _mainGrid.Children.Remove(frameworkElement);
+                    if (Type == DockGridType.Horizontal)
+                    {
+                        _mainGrid.ColumnDefinitions.RemoveRange(1, 2);
+                        _mainGrid.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                    }
+                    else
+                    {
+                        _mainGrid.RowDefinitions.RemoveRange(1, 2);
+                        _mainGrid.RowDefinitions[0].Height = new GridLength(100, GridUnitType.Star);
+                    }
                     Type = DockGridType.Single;
+                    var lastChild = _mainGrid.Children[0];
+                    lastChild.SetValue(Grid.RowProperty, 0);
+                    lastChild.SetValue(Grid.ColumnProperty, 0);
+                    lastChild.ClearValue(WidthProperty);
+                    lastChild.ClearValue(HeightProperty);
                 }
                 else
                 {
                     _mainGrid.RowDefinitions.Clear();
                     _mainGrid.ColumnDefinitions.Clear();
+                    _mainGrid.Children.Clear();
                     Type = DockGridType.Empty;
                 }
             }
@@ -381,6 +392,19 @@ namespace Ovotan.Windows.Controls.Docking
                 throw new NotFrameworkElement();
             }
         }
+
+        private void _onPaneClose(object sender, RoutedEventArgs e)
+        {
+            if(e.Source is IDockPanel panel)
+            {
+                Remove(panel);
+            }
+            else
+            {
+                throw new NotDockPanelException();
+            }
+        }
+
 
         public override string ToString()
         {

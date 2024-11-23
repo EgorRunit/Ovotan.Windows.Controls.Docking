@@ -72,7 +72,7 @@ namespace Ovotan.Windows.Controls.Docking
         /// <param name="siteHost"></param>
         public void SetSiteHost(SiteHost siteHost)
         {
-            var baseContent = new DockPanel(_dockingMessageQueue, siteHost as FrameworkElement);
+            var baseContent = new DockPanel(siteHost);
             var grid = new DockGrid();
             if(SiteHost == null)
             {
