@@ -67,7 +67,7 @@ namespace Ovotan.Windows.Controls.Docking
 
         static DockGrid()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGrid), new FrameworkPropertyMetadata(typeof(ContentControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockGrid), new FrameworkPropertyMetadata(typeof(DockGrid)));
         }
 
         Guid _id;

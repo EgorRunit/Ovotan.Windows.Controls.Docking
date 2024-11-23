@@ -3,10 +3,6 @@
                     xmlns:local="clr-namespace:Ovotan.Windows.Controls.Docking"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--<Style TargetType="{x:Type local:DockPanelCloseButton}" BasedOn="{StaticResource {x:Type controls:ViewboxIcon}}">
-        
-    </Style>-->
-    
     <Style TargetType="{x:Type local:DockPanel}">
         <Setter Property="Template">
             <Setter.Value>
@@ -29,7 +25,7 @@
                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Header}"
                                 TextTrimming="CharacterEllipsis">
                             </TextBlock>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel Margin="0,0,5,0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <controls:ViewboxIcon Opacity="0.5" BaseColor="White" x:Name="PinButton" Width="12" Height="12"  Viewbox="{DynamicResource OVBT_Pin}"/>
                                 <local:DockPanelCloseButton Opacity="0.5" BaseColor="White" x:Name="CloseButton" Width="12" Height="12"  Viewbox="{DynamicResource OVBT_Close}"/>
                             </StackPanel>
