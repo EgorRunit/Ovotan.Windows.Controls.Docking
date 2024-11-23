@@ -18,12 +18,10 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
     {
         int _headerIndex;
         DockingHost _host;
-        DockingMessageQueue _queue;
 
         public MainWindow()
         {
-            _queue = new DockingMessageQueue();
-            _host = new DockingHost(_queue);
+            _host = new DockingHost();
             _host.SetValue(Grid.RowProperty, 1);
             InitializeComponent();
             MainGrid.Children.Add(_host);
@@ -54,7 +52,7 @@ namespace Ovotan.Windows.Controls.Docking.TestApp
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             _headerIndex++;
-            _queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new DockPanel());
+            //_queue.Publish(Enums.DockingMessageType.ShowDockPanelWindow, new DockPanel());
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)

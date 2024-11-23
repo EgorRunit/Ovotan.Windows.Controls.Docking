@@ -27,7 +27,6 @@ namespace Ovotan.Windows.Controls.Docking
         /// <summary>
         /// Экземпляр сервиса очереди сообщений для DockingManager.
         /// </summary>
-        public IDockingMessageQueue _dockingMessageQueue;
         public ISiteHost SiteHost { get; private set; }
 
         public DockGrid DockGrid
@@ -43,12 +42,9 @@ namespace Ovotan.Windows.Controls.Docking
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DockingHost), new FrameworkPropertyMetadata(typeof(DockingHost)));
         }
 
-        public DockingHost(IDockingMessageQueue dockingMessageQueue)
+        public DockingHost()
         {
-            _dockingMessageQueue = dockingMessageQueue;
             _panelDragGrid = new DockGridWindow(this);
-            //_dockingMessageQueue.Register(DockingMessageType.ShowDockPanelWindow, (x) => ShowDockPanelWindow(x as FrameworkElement));
-
             SetSiteHost(new SiteHost());
 
             Mouse.AddPreviewMouseDownHandler(this, (x, y) =>
@@ -113,7 +109,6 @@ namespace Ovotan.Windows.Controls.Docking
         public void ShowDockPanelWindow(FrameworkElement DockPanelContent)
         { 
             var window = new DockPanelWindow(_panelDragGrid, DockPanelContent);
-            window.Initialize(_dockingMessageQueue);
             window.Show();
         }
     }

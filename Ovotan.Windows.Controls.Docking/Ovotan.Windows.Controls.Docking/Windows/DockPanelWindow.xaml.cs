@@ -11,7 +11,6 @@ namespace Ovotan.Windows.Controls.Docking.Windows
     public partial class DockPanelWindow : Window, IDockPanelWindow
     {
         DockGridWindow _dockPlacementWindow;
-        IDockingMessageQueue _dockingMessageQueue;
         Point _location;
 
         public FrameworkElement DockPanelContent { get; private set; }
@@ -29,10 +28,6 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             Application.Current.MainWindow.Closing += (s,a) => Close();
         }
 
-        public void Initialize(IDockingMessageQueue dockingMessageQueue)
-        {
-            _dockingMessageQueue = dockingMessageQueue;
-        }
 
         void DockPanelWindow_MouseMove(MouseEventArgs e)
         {

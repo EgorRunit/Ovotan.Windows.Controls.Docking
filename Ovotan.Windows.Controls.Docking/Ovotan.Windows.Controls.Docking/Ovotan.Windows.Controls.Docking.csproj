@@ -10,8 +10,4 @@
     <ProjectReference Include="..\..\..\Ovotan.Windows.Controls\Ovotan.Windows.Controls\Ovotan.Windows.Controls.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

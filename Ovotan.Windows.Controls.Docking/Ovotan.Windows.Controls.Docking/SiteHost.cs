@@ -11,7 +11,6 @@ namespace Ovotan.Windows.Controls.Docking
     {
 
         //Экземпляр очереди сообщений элметов докинга.
-        IDockingMessageQueue _dockingMessageQueue;
         TabControl _tabControl;
         Dictionary<Guid, ISiteHostDocument> _documents;
 

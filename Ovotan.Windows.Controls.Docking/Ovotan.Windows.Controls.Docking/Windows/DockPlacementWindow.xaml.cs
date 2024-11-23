@@ -15,16 +15,14 @@ namespace Ovotan.Windows.Controls.Docking.Windows
     {
         bool _isMouseCaptured;
         DockPanelWindow _dragginWindpow;
-        IDockingMessageQueue _dockingMessageQueue;
         DockingHost _dockingHost;
         Action<MouseEventArgs> _mouseMoveCallback;
         List<OwnerRect> _elementRectangles;
         Point _location;
 
-        public DockPlacementWindow(DockingHost dockingHost, IDockingMessageQueue dockingMessageQueue)
+        public DockPlacementWindow(DockingHost dockingHost)
         {
             _dockingHost = dockingHost;
-            _dockingMessageQueue = dockingMessageQueue;
             MouseUp += DockPlacementWindow_MouseUp;
             MouseMove += DockPlacementWindow_MouseMove;
             InitializeComponent();
@@ -98,7 +96,6 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             var panelAttachedMessage = new PanelAttachedMessage() { Type = attachType, DockPanelContent = _dragginWindpow.DockPanelContent};
             _dragginWindpow.Content = null;
             _dragginWindpow.Close();
-            _dockingMessageQueue.Publish(DockingMessageType.PanelAttached, panelAttachedMessage);
         }
 
         private void _splitPanel(object sender, MouseButtonEventArgs e)
@@ -120,7 +117,6 @@ namespace Ovotan.Windows.Controls.Docking.Windows
             var panelAttachedMessage = new PanelSplittedMessage() { DockPanelContent = _dragginWindpow.DockPanelContent, PanelSplitted = _oldElementUndexMouse as DockPanel, SplitType = splitType };
             _dragginWindpow.Content = null;
             _dragginWindpow.Close();
-            _dockingMessageQueue.Publish(DockingMessageType.PanelSplitted, panelAttachedMessage);
         }
 
 
