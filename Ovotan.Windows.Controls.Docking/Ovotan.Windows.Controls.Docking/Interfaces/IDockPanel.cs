@@ -7,5 +7,6 @@ namespace Ovotan.Windows.Controls.Docking.Interfaces
     {
         event RoutedEventHandler Close;
         string Header { get; set; }
+        void OnClose();
     }
 }

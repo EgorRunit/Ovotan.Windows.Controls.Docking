@@ -99,6 +99,10 @@ namespace Ovotan.Windows.Controls.Docking
             }
             if(child is FrameworkElement frameworkElement)
             {
+                if (child is IDockPanel panel)
+                {
+                    panel.Close += _onPanelClose;
+                }
                 frameworkElement.SetValue(Grid.RowProperty, 0);
                 frameworkElement.SetValue(Grid.ColumnProperty, 0);
                 _mainGrid.Children.Add(frameworkElement);
@@ -133,7 +137,7 @@ namespace Ovotan.Windows.Controls.Docking
             {
                 if(child is IDockPanel panel)
                 {
-                    panel.Close += _onPaneClose;
+                    panel.Close += _onPanelClose;
                 }
 
                 var splitter = new GridSplitter()
@@ -178,6 +182,10 @@ namespace Ovotan.Windows.Controls.Docking
             }
             if (child is FrameworkElement frameworkElement)
             {
+                if (child is IDockPanel panel)
+                {
+                    panel.Close += _onPanelClose;
+                }
                 var splitter = new GridSplitter()
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
@@ -250,6 +258,10 @@ namespace Ovotan.Windows.Controls.Docking
             }
             if (child is FrameworkElement frameworkElement)
             {
+                if (child is IDockPanel panel)
+                {
+                    panel.Close += _onPanelClose;
+                }
                 var splitter = new GridSplitter()
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -293,6 +305,10 @@ namespace Ovotan.Windows.Controls.Docking
             }
             if (child is FrameworkElement frameworkElement)
             {
+                if (child is IDockPanel panel)
+                {
+                    panel.Close += _onPanelClose;
+                }
                 var splitter = new GridSplitter()
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -325,6 +341,7 @@ namespace Ovotan.Windows.Controls.Docking
         /// <exception cref="NotFrameworkElement">Occurs when the panel is not an element of the framework.</exception>
         public DockGrid TransformToDataGrid(IDockGridChild child)
         {
+            throw new Exception("");
             if (child is FrameworkElement frameworkElement)
             {
                 var childIndex = _mainGrid.Children.IndexOf(frameworkElement);
@@ -386,6 +403,10 @@ namespace Ovotan.Windows.Controls.Docking
                     _mainGrid.Children.Clear();
                     Type = DockGridType.Empty;
                 }
+                if(child is IDockPanel panel)
+                {
+                    panel.Close -= _onPanelClose;
+                }
             }
             else
             {
@@ -393,7 +414,7 @@ namespace Ovotan.Windows.Controls.Docking
             }
         }
 
-        private void _onPaneClose(object sender, RoutedEventArgs e)
+        private void _onPanelClose(object sender, RoutedEventArgs e)
         {
             if(e.Source is IDockPanel panel)
             {

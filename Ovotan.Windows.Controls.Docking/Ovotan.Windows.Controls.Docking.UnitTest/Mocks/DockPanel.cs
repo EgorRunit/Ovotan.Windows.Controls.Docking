@@ -13,5 +13,10 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest.Mocks
         public string Header { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event RoutedEventHandler Close;
+
+        public void OnClose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

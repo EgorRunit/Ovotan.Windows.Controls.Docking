@@ -9,8 +9,8 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
     public class DockGridTest
     {
         IDockGrid _dockGrid;
-        IDockGridChild _firstPanel;
-        IDockGridChild _secondPanel;
+        IDockPanel _firstPanel;
+        IDockPanel _secondPanel;
 
         public DockGridTest()
         {
@@ -464,5 +464,150 @@ namespace Ovotan.Windows.Controls.Docking.UnitTest
             Assert.Throws<NotFrameworkElement>(() => _dockGrid.Remove(new Mocks.DockPanel()));
         }
         #endregion
+
+
+        [StaFact]
+        public void AppendClose()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _firstPanel.OnClose();
+
+            //assert
+            Assert.Empty(_dockGrid.Children);
+            Assert.Empty(_dockGrid.RowDefinitions);
+            Assert.Empty(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendCloseRepeat()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _firstPanel.OnClose();
+            _firstPanel.OnClose();
+
+
+            //assert
+            Assert.Empty(_dockGrid.Children);
+            Assert.Empty(_dockGrid.RowDefinitions);
+            Assert.Empty(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendLeftClose()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendLeft(_secondPanel);
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendLeftCloseRepeat()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendLeft(_secondPanel);
+            _secondPanel.OnClose();
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendRightClose()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendRight(_secondPanel);
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendRightCloseRepeat()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendRight(_secondPanel);
+            _secondPanel.OnClose();
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendTopClose()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendTop(_secondPanel);
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendTopCloseRepeat()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendTop(_secondPanel);
+            _secondPanel.OnClose();
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendBottomClose()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendBottom(_secondPanel);
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
+
+        [StaFact]
+        public void AppendBottomCloseRepeat()
+        {
+            //act
+            _dockGrid.Append(_firstPanel);
+            _dockGrid.AppendBottom(_secondPanel);
+            _secondPanel.OnClose();
+            _secondPanel.OnClose();
+
+            //assert
+            Assert.Single(_dockGrid.Children);
+            Assert.Single(_dockGrid.RowDefinitions);
+            Assert.Single(_dockGrid.ColumnDefinitions);
+        }
     }
 }
